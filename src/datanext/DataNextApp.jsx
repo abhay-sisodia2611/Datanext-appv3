@@ -9,6 +9,15 @@ const cardStyle = {
   padding: '20px'
 };
 
+const pathColors = {
+  'S/4HANA Embedded Analytics': palette.primary,
+  'SAP Datasphere / BDC': palette.accentPurple,
+  'Databricks': palette.accentBlue,
+  'SAP BW HANA Cloud': palette.accentGreen || '#10B981',
+  'Retain': palette.primaryStrong,
+  'Retire': palette.warning
+};
+
 const Section = ({ title, subtitle, children, actions }) => (
   <div style={cardStyle}>
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
@@ -142,12 +151,12 @@ const ReportCatalog = ({ reports, onRowClick, showStatusMigration = false }) => 
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search reports or IDs"
-          style={{ padding: '8px 12px', border: `1px solid \${palette.border}`, borderRadius: radii.md, width: 240, fontSize: 13 }}
+          style={{ padding: '8px 12px', border: `1px solid ${palette.border}`, borderRadius: radii.md, width: 240, fontSize: 13 }}
         />
-        <select value={filterArea} onChange={e => setFilterArea(e.target.value)} style={{ padding: '8px 10px', border: `1px solid \${palette.border}`, borderRadius: radii.md, fontSize: 13 }}>
+        <select value={filterArea} onChange={e => setFilterArea(e.target.value)} style={{ padding: '8px 10px', border: `1px solid ${palette.border}`, borderRadius: radii.md, fontSize: 13 }}>
           {functionalAreas.map(a => <option key={a} value={a}>{a === 'All' ? 'All Functional Areas' : a}</option>)}
         </select>
-        <select value={filterSource} onChange={e => setFilterSource(e.target.value)} style={{ padding: '8px 10px', border: `1px solid \${palette.border}`, borderRadius: radii.md, fontSize: 13 }}>
+        <select value={filterSource} onChange={e => setFilterSource(e.target.value)} style={{ padding: '8px 10px', border: `1px solid ${palette.border}`, borderRadius: radii.md, fontSize: 13 }}>
           {sourceTypes.map(s => <option key={s} value={s}>{s === 'All' ? 'All Sources' : s}</option>)}
         </select>
         <span style={{ marginLeft: 'auto', fontSize: 13, color: palette.muted }}>Showing {filtered.length} of {reports.length}</span>
@@ -159,29 +168,29 @@ const ReportCatalog = ({ reports, onRowClick, showStatusMigration = false }) => 
               {['Report ID', 'Name', 'Source', 'Functional Area', 'Category', 'Data Sources', 'KPIs', 'Refresh', 'Owner']
                 .concat(showStatusMigration ? ['Status', 'Migration Path'] : [])
                 .map(header => (
-                <th key={header} style={{ padding: '10px 8px', textAlign: 'left', fontWeight: 700, color: palette.text, borderBottom: `2px solid \${palette.border}`, whiteSpace: 'nowrap' }}>{header}</th>
+                <th key={header} style={{ padding: '10px 8px', textAlign: 'left', fontWeight: 700, color: palette.text, borderBottom: `2px solid ${palette.border}`, whiteSpace: 'nowrap' }}>{header}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {filtered.slice(0, 60).map(report => (
               <tr key={report.id} onClick={() => onRowClick(report)} style={{ cursor: 'pointer' }}>
-                <td style={{ padding: '10px 8px', borderBottom: `1px solid \${palette.border}`, fontFamily: 'monospace', color: palette.muted }}>{report.id}</td>
-                <td style={{ padding: '10px 8px', borderBottom: `1px solid \${palette.border}`, fontWeight: 600, color: palette.text }}>{report.name}</td>
-                <td style={{ padding: '10px 8px', borderBottom: `1px solid \${palette.border}` }}>
+                <td style={{ padding: '10px 8px', borderBottom: `1px solid ${palette.border}`, fontFamily: 'monospace', color: palette.muted }}>{report.id}</td>
+                <td style={{ padding: '10px 8px', borderBottom: `1px solid ${palette.border}`, fontWeight: 600, color: palette.text }}>{report.name}</td>
+                <td style={{ padding: '10px 8px', borderBottom: `1px solid ${palette.border}` }}>
                   <span style={{ padding: '4px 8px', borderRadius: radii.sm, background: sourceColors[report.sourceType].bg, color: sourceColors[report.sourceType].text, fontWeight: 600 }}>
                     {report.sourceType}
                   </span>
                 </td>
-                <td style={{ padding: '10px 8px', borderBottom: `1px solid \${palette.border}`, color: palette.text }}>{report.functionalArea}</td>
-                <td style={{ padding: '10px 8px', borderBottom: `1px solid \${palette.border}`, color: palette.muted }}>{report.category}</td>
-                <td style={{ padding: '10px 8px', borderBottom: `1px solid \${palette.border}`, color: palette.muted }}>{report.dataSources.join(', ')}</td>
-                <td style={{ padding: '10px 8px', borderBottom: `1px solid \${palette.border}`, color: palette.muted }}>{report.kpiExamples.join(', ')}</td>
-                <td style={{ padding: '10px 8px', borderBottom: `1px solid \${palette.border}`, color: palette.muted }}>{report.refreshFrequency}</td>
-                <td style={{ padding: '10px 8px', borderBottom: `1px solid \${palette.border}`, color: palette.text }}>{report.businessOwner}</td>
+                <td style={{ padding: '10px 8px', borderBottom: `1px solid ${palette.border}`, color: palette.text }}>{report.functionalArea}</td>
+                <td style={{ padding: '10px 8px', borderBottom: `1px solid ${palette.border}`, color: palette.muted }}>{report.category}</td>
+                <td style={{ padding: '10px 8px', borderBottom: `1px solid ${palette.border}`, color: palette.muted }}>{report.dataSources.join(', ')}</td>
+                <td style={{ padding: '10px 8px', borderBottom: `1px solid ${palette.border}`, color: palette.muted }}>{report.kpiExamples.join(', ')}</td>
+                <td style={{ padding: '10px 8px', borderBottom: `1px solid ${palette.border}`, color: palette.muted }}>{report.refreshFrequency}</td>
+                <td style={{ padding: '10px 8px', borderBottom: `1px solid ${palette.border}`, color: palette.text }}>{report.businessOwner}</td>
                 {showStatusMigration && (
                   <>
-                    <td style={{ padding: '10px 8px', borderBottom: `1px solid \${palette.border}` }}>
+                    <td style={{ padding: '10px 8px', borderBottom: `1px solid ${palette.border}` }}>
                       {(() => {
                         const statusLabel = report.migrationPath === 'Retain' ? 'Retain' : report.migrationPath === 'Retire' ? 'Retire' : report.status;
                         const colors = statusColors[statusLabel] || { bg: palette.bg, text: palette.text };
@@ -192,7 +201,7 @@ const ReportCatalog = ({ reports, onRowClick, showStatusMigration = false }) => 
                         );
                       })()}
                     </td>
-                    <td style={{ padding: '10px 8px', borderBottom: `1px solid \${palette.border}`, color: palette.text, fontWeight: 600 }}>
+                    <td style={{ padding: '10px 8px', borderBottom: `1px solid ${palette.border}`, color: palette.text, fontWeight: 600 }}>
                       {report.migrationPath === 'Retire' ? '' : report.migrationPath}
                     </td>
                   </>
@@ -208,13 +217,13 @@ const ReportCatalog = ({ reports, onRowClick, showStatusMigration = false }) => 
 
 const DecisionCriteriaPanel = ({ criteria, onWeightChange }) => (
   <Section title="Decision Criteria Framework" subtitle="Adjust weights to tune classification and migration recommendations">
-    <div style={{ marginBottom: 10, padding: 10, borderRadius: radii.md, background: '#F9FAFB', border: `1px solid \${palette.border}` }}>
+    <div style={{ marginBottom: 10, padding: 10, borderRadius: radii.md, background: '#F9FAFB', border: `1px solid ${palette.border}` }}>
       <div style={{ fontWeight: 700, color: palette.text }}>Weights total: {criteria.reduce((s, c) => s + c.weight, 0)}</div>
       <div style={{ color: palette.muted, fontSize: 12 }}>Keep total at 100 for balanced scoring. Adjust sliders to redistribute.</div>
     </div>
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 12 }}>
       {criteria.map(c => (
-        <div key={c.id} style={{ ...cardStyle, border: `1px solid \${palette.border}`, boxShadow: shadow }}>
+        <div key={c.id} style={{ ...cardStyle, border: `1px solid ${palette.border}`, boxShadow: shadow }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
             <div>
               <div style={{ fontWeight: 700, color: palette.text }}>{c.name}</div>
@@ -235,15 +244,6 @@ const DecisionCriteriaPanel = ({ criteria, onWeightChange }) => (
   </Section>
 );
 
-const pathColors = {
-  'S/4HANA Embedded Analytics': palette.primary,
-  'SAP Datasphere / BDC': palette.accentPurple,
-  'Databricks': palette.accentBlue,
-  'SAP BW HANA Cloud': palette.accentGreen || '#10B981',
-  'Retain': palette.primaryStrong,
-  'Retire': palette.warning
-};
-
 const MigrationMatrix = ({ reports }) => {
   const sources = ['SAP ABAP', 'SAP BW', 'Databricks'];
   const targets = ['S/4HANA Embedded Analytics', 'SAP Datasphere / BDC', 'Databricks', 'SAP BW HANA Cloud', 'Retain', 'Retire'];
@@ -262,105 +262,715 @@ const MigrationMatrix = ({ reports }) => {
   const rowTotals = sources.map(s => counts[s]['Retain'] + counts[s]['Retire']);
   const colTotals = targets.map(t => sources.reduce((sum, s) => sum + counts[s][t], 0));
   const grandTotal = reports.length;
-  const cellColor = (t) => `\${pathColors[t]}25`;
+  const cellColor = (t) => `${pathColors[t]}25`;
 
   return (
     <div style={{ overflowX: 'auto' }}>
-      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13, border: `1px solid \${palette.border}`, borderRadius: radii.md, overflow: 'hidden' }}>
+      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13, border: `1px solid ${palette.border}`, borderRadius: radii.md, overflow: 'hidden' }}>
         <thead>
           <tr>
-            <th style={{ padding: 12, textAlign: 'left', borderBottom: `2px solid \${palette.border}`, background: palette.bg }}>Source → Path</th>
+            <th style={{ padding: 12, textAlign: 'left', borderBottom: `2px solid ${palette.border}`, background: palette.bg }}>Source → Path</th>
             {targets.map(t => (
-              <th key={t} style={{ padding: 12, textAlign: 'center', borderBottom: `2px solid \${palette.border}`, background: palette.bg, color: palette.text }}>{t}</th>
+              <th key={t} style={{ padding: 12, textAlign: 'center', borderBottom: `2px solid ${palette.border}`, background: palette.bg, color: palette.text }}>{t}</th>
             ))}
-            <th style={{ padding: 12, textAlign: 'center', borderBottom: `2px solid \${palette.border}`, background: palette.bg, color: palette.text }}>Total</th>
+            <th style={{ padding: 12, textAlign: 'center', borderBottom: `2px solid ${palette.border}`, background: palette.bg, color: palette.text }}>Total</th>
           </tr>
         </thead>
         <tbody>
           {sources.map((s, rowIdx) => (
             <tr key={s}>
-              <td style={{ padding: 12, borderBottom: `1px solid \${palette.border}`, fontWeight: 700, color: palette.text, background: palette.surface }}>{s}</td>
+              <td style={{ padding: 12, borderBottom: `1px solid ${palette.border}`, fontWeight: 700, color: palette.text, background: palette.surface }}>{s}</td>
               {targets.map(t => (
-                <td key={t} style={{ padding: 12, borderBottom: `1px solid \${palette.border}`, textAlign: 'center', color: pathColors[t], background: cellColor(t), fontWeight: 700 }}>
+                <td key={t} style={{ padding: 12, borderBottom: `1px solid ${palette.border}`, textAlign: 'center', color: pathColors[t], background: cellColor(t), fontWeight: 700 }}>
                   {counts[s][t]}
                 </td>
               ))}
-              <td style={{ padding: 12, borderBottom: `1px solid \${palette.border}`, textAlign: 'center', fontWeight: 800, color: palette.text, background: palette.bg }}>{rowTotals[rowIdx]}</td>
+              <td style={{ padding: 12, borderBottom: `1px solid ${palette.border}`, textAlign: 'center', fontWeight: 800, color: palette.text, background: palette.bg }}>{rowTotals[rowIdx]}</td>
             </tr>
           ))}
           <tr>
-            <td style={{ padding: 12, borderTop: `2px solid \${palette.border}`, fontWeight: 800, color: palette.text, background: palette.bg }}>Total</td>
+            <td style={{ padding: 12, borderTop: `2px solid ${palette.border}`, fontWeight: 800, color: palette.text, background: palette.bg }}>Total</td>
             {targets.map((t, idx) => (
-              <td key={t} style={{ padding: 12, borderTop: `2px solid \${palette.border}`, textAlign: 'center', fontWeight: 800, color: pathColors[t], background: cellColor(t) }}>
+              <td key={t} style={{ padding: 12, borderTop: `2px solid ${palette.border}`, textAlign: 'center', fontWeight: 800, color: pathColors[t], background: cellColor(t) }}>
                 {colTotals[idx]}
               </td>
             ))}
-            <td style={{ padding: 12, borderTop: `2px solid \${palette.border}`, textAlign: 'center', fontWeight: 900, color: palette.primaryStrong, background: palette.surface }}>{grandTotal}</td>
+            <td style={{ padding: 12, borderTop: `2px solid ${palette.border}`, textAlign: 'center', fontWeight: 900, color: palette.primaryStrong, background: palette.surface }}>{grandTotal}</td>
           </tr>
         </tbody>
       </table>
-      <div style={{ marginTop: 12, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 10 }}>
-        <div style={{ ...cardStyle, border: `1px solid \${palette.border}` }}>
-          <div style={{ fontWeight: 700, color: palette.text }}>Executive View</div>
-          <ul style={{ margin: '6px 0 0', paddingLeft: 16, color: palette.muted, fontSize: 13, lineHeight: 1.6 }}>
-            {targets.map(t => (
-              <li key={t}>{t}: {sources.reduce((s, src) => s + counts[src][t], 0)}</li>
-            ))}
-          </ul>
-        </div>
-        <div style={{ ...cardStyle, border: `1px solid \${palette.border}` }}>
-          <div style={{ fontWeight: 700, color: palette.text }}>Risk Hotspots</div>
-          <ul style={{ margin: '6px 0 0', paddingLeft: 16, color: palette.muted, fontSize: 13, lineHeight: 1.6 }}>
-            <li>High Retire counts need business validation</li>
-            <li>High-complexity Databricks or BW HANA Cloud moves need data readiness checks</li>
-            <li>Ownership gaps delay migrations—fill before execution</li>
-          </ul>
-        </div>
-        <div style={{ ...cardStyle, border: `1px solid \${palette.border}` }}>
-          <div style={{ fontWeight: 700, color: palette.text }}>Action Queue</div>
-          <ul style={{ margin: '6px 0 0', paddingLeft: 16, color: palette.muted, fontSize: 13, lineHeight: 1.6 }}>
-            <li>Prioritize high-usage SAP Datasphere / BDC rebuilds</li>
-            <li>Schedule Databricks moves with AI/ML dependencies</li>
-            <li>Lock retirements after governance sign-off</li>
-          </ul>
-        </div>
-      </div>
     </div>
   );
 };
 
-const ReportDetailPanel = ({ report, onClose, criteria }) => (
-  <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, width: 420, background: palette.surface, boxShadow: '-6px 0 30px rgba(0,0,0,0.1)', padding: 20, overflowY: 'auto', borderLeft: `1px solid \${palette.border}` }}>
-    <button onClick={onClose} style={{ border: `1px solid \${palette.border}`, background: 'transparent', padding: '6px 10px', borderRadius: radii.sm, cursor: 'pointer', color: palette.muted }}>Close</button>
-    <h3 style={{ margin: '12px 0 4px', color: palette.text }}>{report.name}</h3>
-    <p style={{ margin: 0, color: palette.muted, fontSize: 13 }}>{report.id} - {report.sourceType} - {report.functionalArea}</p>
-    <div style={{ marginTop: 14, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-      {[{ label: 'Status', value: report.status }, { label: 'Migration Path', value: report.migrationPath }, { label: 'Owner', value: report.businessOwner }, { label: 'Refresh', value: report.refreshFrequency }, { label: 'Last Used (days)', value: report.lastUsed }, { label: 'Active Users', value: report.activeUsers }].map(item => (
-        <div key={item.label} style={{ padding: '10px 12px', borderRadius: radii.md, background: palette.bg, border: `1px solid \${palette.border}` }}>
-          <div style={{ fontSize: 12, color: palette.muted }}>{item.label}</div>
-          <div style={{ fontWeight: 700, color: palette.text }}>{item.value}</div>
+
+// NEW: Enhanced MigrationFlowDiagram Component
+const MigrationFlowDiagram = () => {
+  const [filter, setFilter] = useState('All');
+  const [selectedNode, setSelectedNode] = useState(null);
+
+  const filters = [
+    'All',
+    'Cross-Functional',
+    'ABAP',
+    'BW',
+    'Custom Z',
+    'FI',
+    'CO',
+    'SD',
+    'MM',
+    'PP',
+    'MRP',
+    'IM'
+  ];
+
+  const moduleFilterMap = {
+    FI: 'fi',
+    CO: 'co',
+    SD: 'sd',
+    MM: 'mm',
+    PP: 'pp',
+    MRP: 'mrp',
+    IM: 'im'
+  };
+
+  const modules = [
+    { id: 'fi', label: 'FI', color: '#2563EB', x: 140, y: 120, w: 220, h: 140 },
+    { id: 'co', label: 'CO', color: '#7C3AED', x: 420, y: 120, w: 220, h: 140 },
+    { id: 'sd', label: 'SD', color: '#16A34A', x: 700, y: 120, w: 220, h: 140 },
+    { id: 'mm', label: 'MM', color: '#F97316', x: 200, y: 320, w: 220, h: 140 },
+    { id: 'pp', label: 'PP', color: '#EF4444', x: 480, y: 320, w: 220, h: 140 },
+    { id: 'mrp', label: 'MRP', color: '#FB923C', x: 760, y: 320, w: 220, h: 140 },
+    { id: 'im', label: 'IM', color: '#0EA5E9', x: 480, y: 520, w: 220, h: 120 },
+    { id: 'shared', label: 'Shared', color: '#EA580C', x: 980, y: 240, w: 180, h: 220 }
+  ];
+
+  const nodes = [
+    { id: 'fi-1', label: '0FI_GL', module: 'fi', source: 'ABAP', dx: 30, dy: 35, cross: true },
+    { id: 'fi-2', label: '0FI_AP', module: 'fi', source: 'BW', dx: 110, dy: 30, cross: true },
+    { id: 'fi-3', label: 'ZFI01', module: 'fi', source: 'Custom Z', dx: 60, dy: 90, cross: false },
+    { id: 'co-1', label: '0CO_CCTR', module: 'co', source: 'ABAP', dx: 40, dy: 35, cross: true },
+    { id: 'co-2', label: '0CO_PLAN', module: 'co', source: 'BW', dx: 120, dy: 30, cross: true },
+    { id: 'co-3', label: 'ZCO01', module: 'co', source: 'Custom Z', dx: 70, dy: 90, cross: false },
+    { id: 'sd-1', label: 'VA05', module: 'sd', source: 'ABAP', dx: 40, dy: 35, cross: true },
+    { id: 'sd-2', label: 'V.02', module: 'sd', source: 'BW', dx: 120, dy: 30, cross: true },
+    { id: 'sd-3', label: 'ZSD01', module: 'sd', source: 'Custom Z', dx: 70, dy: 90, cross: false },
+    { id: 'mm-1', label: 'ME2L', module: 'mm', source: 'ABAP', dx: 35, dy: 30, cross: true },
+    { id: 'mm-2', label: 'MB51', module: 'mm', source: 'BW', dx: 115, dy: 30, cross: true },
+    { id: 'mm-3', label: 'ZMM01', module: 'mm', source: 'Custom Z', dx: 70, dy: 95, cross: false },
+    { id: 'pp-1', label: 'CO01', module: 'pp', source: 'ABAP', dx: 35, dy: 30, cross: true },
+    { id: 'pp-2', label: 'CM01', module: 'pp', source: 'BW', dx: 115, dy: 30, cross: true },
+    { id: 'pp-3', label: 'ZPP01', module: 'pp', source: 'Custom Z', dx: 70, dy: 95, cross: false },
+    { id: 'mrp-1', label: 'MD04', module: 'mrp', source: 'ABAP', dx: 35, dy: 30, cross: true },
+    { id: 'mrp-2', label: 'MD06', module: 'mrp', source: 'BW', dx: 115, dy: 30, cross: true },
+    { id: 'mrp-3', label: 'ZMRP', module: 'mrp', source: 'Custom Z', dx: 70, dy: 95, cross: false },
+    { id: 'im-1', label: 'MB52', module: 'im', source: 'ABAP', dx: 40, dy: 35, cross: true },
+    { id: 'im-2', label: 'MI20', module: 'im', source: 'BW', dx: 120, dy: 35, cross: true },
+    { id: 'im-3', label: 'ZIM01', module: 'im', source: 'Custom Z', dx: 70, dy: 80, cross: false },
+    { id: 'sh-1', label: 'Company', module: 'shared', source: 'Shared', dx: 40, dy: 40, cross: true },
+    { id: 'sh-2', label: 'Plant', module: 'shared', source: 'Shared', dx: 100, dy: 90, cross: true },
+    { id: 'sh-3', label: 'Customer', module: 'shared', source: 'Shared', dx: 40, dy: 130, cross: true },
+    { id: 'sh-4', label: 'Material', module: 'shared', source: 'Shared', dx: 120, dy: 50, cross: true },
+    { id: 'sh-5', label: 'Vendor', module: 'shared', source: 'Shared', dx: 110, dy: 150, cross: true }
+  ];
+
+  const edges = [
+    { from: 'fi-1', to: 'sh-1', type: 'cross' },
+    { from: 'fi-2', to: 'sh-2', type: 'cross' },
+    { from: 'co-1', to: 'sh-5', type: 'cross' },
+    { from: 'co-2', to: 'sh-1', type: 'cross' },
+    { from: 'sd-1', to: 'sh-3', type: 'cross' },
+    { from: 'sd-2', to: 'sh-1', type: 'cross' },
+    { from: 'mm-1', to: 'sh-5', type: 'cross' },
+    { from: 'mm-2', to: 'sh-4', type: 'cross' },
+    { from: 'pp-1', to: 'sh-2', type: 'cross' },
+    { from: 'pp-2', to: 'sh-4', type: 'cross' },
+    { from: 'mrp-1', to: 'sh-2', type: 'cross' },
+    { from: 'mrp-2', to: 'sh-4', type: 'cross' },
+    { from: 'im-1', to: 'sh-2', type: 'cross' },
+    { from: 'im-2', to: 'sh-4', type: 'cross' },
+    { from: 'fi-1', to: 'fi-3', type: 'within' },
+    { from: 'mm-1', to: 'mm-3', type: 'within' },
+    { from: 'pp-1', to: 'pp-3', type: 'within' }
+  ];
+
+  const isNodeVisible = (node) => {
+    if (filter === 'All') return true;
+    if (filter === 'Cross-Functional') return node.cross || node.module === 'shared';
+    if (filter === 'ABAP' || filter === 'BW' || filter === 'Custom Z') return node.source === filter;
+    if (moduleFilterMap[filter]) return node.module === moduleFilterMap[filter];
+    return true;
+  };
+
+  const visibleNodes = nodes.filter(isNodeVisible);
+  const nodeById = Object.fromEntries(visibleNodes.map(node => [node.id, node]));
+
+  const isEdgeVisible = (edge) => nodeById[edge.from] && nodeById[edge.to];
+
+  const getNodePosition = (node) => {
+    const mod = modules.find(m => m.id === node.module);
+    return { x: mod.x + node.dx, y: mod.y + node.dy };
+  };
+
+  const buttonStyle = (active) => ({
+    padding: '6px 12px',
+    borderRadius: radii.md,
+    border: `1px solid ${active ? palette.primary : palette.border}`,
+    background: active ? palette.primarySoft : palette.surface,
+    color: active ? palette.primaryStrong : palette.text,
+    cursor: 'pointer',
+    fontWeight: 600,
+    fontSize: 12
+  });
+
+  return (
+    <Section
+      title="SAP Functional Knowledge Graph - Module & Report Relationships"
+      subtitle="Cross-functional dependencies across modules, ABAP, BW, and Custom Z reports"
+    >
+      <div style={{ display: 'grid', gridTemplateColumns: '260px 1fr', gap: 16 }}>
+        <div style={{ ...cardStyle, border: `1px solid ${palette.border}` }}>
+          <div style={{ fontWeight: 700, color: palette.text, marginBottom: 8 }}>Module Clusters</div>
+          <div style={{ display: 'grid', gap: 8, fontSize: 13 }}>
+            {modules.filter(m => m.id !== 'shared').map(module => (
+              <div key={module.id} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <span style={{ width: 16, height: 16, borderRadius: '50%', border: `2px solid ${module.color}`, display: 'inline-block' }} />
+                <span style={{ color: palette.text }}>{module.label}</span>
+              </div>
+            ))}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 6 }}>
+              <span style={{ width: 16, height: 16, borderRadius: '50%', border: `2px solid ${modules.find(m => m.id === 'shared').color}`, display: 'inline-block' }} />
+              <span style={{ color: palette.text }}>Shared Entities</span>
+            </div>
+          </div>
+          <div style={{ marginTop: 16, fontSize: 12, color: palette.muted }}>
+            Links:
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 6 }}>
+              <span style={{ width: 24, height: 2, background: palette.muted, display: 'inline-block' }} />
+              <span>Within Module</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 6 }}>
+              <span style={{ width: 24, height: 2, background: '#EF4444', display: 'inline-block' }} />
+              <span>Cross Module</span>
+            </div>
+          </div>
         </div>
-      ))}
-    </div>
-    <Section title="Criteria Scores" subtitle="Weighted inputs driving classification and path">
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 8 }}>
-        {criteria.map(c => (
-          <div key={c.id} style={{ padding: '10px 12px', borderRadius: radii.md, background: palette.bg, border: `1px solid \${palette.border}` }}>
-            <div style={{ fontSize: 12, color: palette.muted }}>{c.shortName}</div>
-            <div style={{ fontWeight: 700, color: palette.text }}>{report.criteriaScores[c.id]}</div>
-            <div style={{ fontSize: 11, color: palette.muted }}>Weight {c.weight}%</div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+            {filters.map(item => (
+              <button key={item} onClick={() => setFilter(item)} style={buttonStyle(filter === item)}>
+                {item}
+              </button>
+            ))}
+          </div>
+
+          <div style={{ position: 'relative', overflow: 'auto', background: palette.surface, borderRadius: radii.lg, border: `1px solid ${palette.border}` }}>
+            <svg width={1280} height={700} viewBox="0 0 1280 700">
+              <rect x={20} y={10} width={1240} height={60} rx={14} fill={palette.surface} stroke={palette.border} />
+              <text x={640} y={45} textAnchor="middle" fontSize="18" fontWeight="700" fill={palette.text}>
+                SAP Functional Knowledge Graph - Module & Report Relationships
+              </text>
+
+              {modules.map(module => (
+                <g key={module.id} opacity={module.id === 'shared' || filter === 'All' || filter === 'Cross-Functional' || moduleFilterMap[filter] === module.id ? 1 : 0.15}>
+                  <rect x={module.x} y={module.y} width={module.w} height={module.h} rx={14} fill="none" stroke={module.color} strokeWidth="2" />
+                  <text x={module.x + module.w / 2} y={module.y - 8} textAnchor="middle" fontSize="12" fontWeight="700" fill={module.color}>
+                    {module.label}
+                  </text>
+                </g>
+              ))}
+
+              {edges.filter(isEdgeVisible).map((edge, idx) => {
+                const from = getNodePosition(nodeById[edge.from]);
+                const to = getNodePosition(nodeById[edge.to]);
+                return (
+                  <line
+                    key={idx}
+                    x1={from.x}
+                    y1={from.y}
+                    x2={to.x}
+                    y2={to.y}
+                    stroke={edge.type === 'cross' ? '#EF4444' : palette.muted}
+                    strokeDasharray={edge.type === 'cross' ? '5 4' : '0'}
+                    strokeWidth={edge.type === 'cross' ? 1.5 : 1}
+                    opacity={edge.type === 'cross' ? 0.7 : 0.35}
+                  />
+                );
+              })}
+
+              {visibleNodes.map(node => {
+                const pos = getNodePosition(node);
+                const mod = modules.find(m => m.id === node.module);
+                return (
+                  <g key={node.id} onClick={() => setSelectedNode(node)} style={{ cursor: 'pointer' }}>
+                    <circle cx={pos.x} cy={pos.y} r={14} fill={palette.surface} stroke={mod.color} strokeWidth="2" />
+                    <text x={pos.x} y={pos.y + 4} textAnchor="middle" fontSize="9" fill={palette.text}>
+                      {node.label}
+                    </text>
+                  </g>
+                );
+              })}
+            </svg>
+          </div>
+
+          {selectedNode && (
+            <div style={{ ...cardStyle, border: `1px solid ${palette.border}` }}>
+              <div style={{ fontWeight: 700, color: palette.text }}>{selectedNode.label}</div>
+              <div style={{ fontSize: 12, color: palette.muted }}>Module: {selectedNode.module.toUpperCase()}</div>
+              <div style={{ fontSize: 12, color: palette.muted }}>Source: {selectedNode.source}</div>
+            </div>
+          )}
+        </div>
+      </div>
+    </Section>
+  );
+};
+
+
+// NEW: DataLineageFlow Component
+const DataLineageFlow = () => {
+  const [activeLayer, setActiveLayer] = useState('all');
+
+  const layers = [
+    { id: 'all', label: 'All Layers' },
+    { id: 'legacy', label: 'Legacy Assets' },
+    { id: 'semantics', label: 'Semantics & KPIs' },
+    { id: 'engines', label: 'S/4 Engines' },
+    { id: 'migration', label: 'Migration Paths' },
+    { id: 'governance', label: 'Governance' }
+  ];
+
+  const layerColors = {
+    legacy: '#DBEAFE',
+    semantics: '#FEF3C7',
+    engines: '#EDE9FE',
+    migration: '#FCE7F3',
+    governance: '#DCFCE7'
+  };
+
+  const nodes = [
+    { id: 'gl', label: 'S_ALR_87012357\nGL Balances', x: 100, y: 100, layer: 'legacy' },
+    { id: 'bseg', label: 'BSEG\nFI Document', x: 100, y: 180, layer: 'legacy' },
+    { id: 'coep', label: 'COEP\nCO Line Items', x: 100, y: 260, layer: 'legacy' },
+    { id: 'vbap', label: 'VBAP\nSales Items', x: 100, y: 340, layer: 'legacy' },
+    { id: 'ekko', label: 'EKKO\nPO Header', x: 100, y: 420, layer: 'legacy' },
+    { id: 'kpi-plan', label: 'KPI:\nPlan vs Actual', x: 320, y: 140, layer: 'semantics' },
+    { id: 'kpi-rev', label: 'KPI:\nRevenue', x: 320, y: 220, layer: 'semantics' },
+    { id: 'kpi-otd', label: 'KPI:\nOn-Time Delivery', x: 320, y: 300, layer: 'semantics' },
+    { id: 'kpi-vendor', label: 'KPI:\nVendor Performance', x: 320, y: 380, layer: 'semantics' },
+    { id: 'dim-plant', label: 'Dim:\nPlant', x: 320, y: 460, layer: 'semantics' },
+    { id: 'cds-fi', label: 'CDS AQ:\nFI', x: 540, y: 140, layer: 'engines' },
+    { id: 'cds-co', label: 'CDS AQ:\nCO', x: 540, y: 220, layer: 'engines' },
+    { id: 'bdc-fin', label: 'BDC:\nFinance', x: 540, y: 300, layer: 'engines' },
+    { id: 'fiori', label: 'Fiori:\nSales', x: 540, y: 380, layer: 'engines' },
+    { id: 'sac', label: 'SAC:\nExecutive', x: 540, y: 460, layer: 'engines' },
+    { id: 'pattern-cds', label: 'Pattern:\nRebuild CDS', x: 760, y: 120, layer: 'migration' },
+    { id: 'wave-1', label: 'Wave 1\nFI, CO, SD', x: 760, y: 240, layer: 'migration' },
+    { id: 'wave-2', label: 'Wave 2\nMM, PP, IM', x: 760, y: 360, layer: 'migration' },
+    { id: 'pattern-bdc', label: 'Pattern:\nReplatform BDC', x: 760, y: 480, layer: 'migration' },
+    { id: 'policy', label: 'Policy:\nRBAC', x: 980, y: 200, layer: 'governance' },
+    { id: 'security', label: 'Security:\nAudit', x: 980, y: 320, layer: 'governance' },
+    { id: 'ops', label: 'Ops:\nLineage QA', x: 980, y: 440, layer: 'governance' }
+  ];
+
+  const edges = [
+    ['gl', 'kpi-plan'],
+    ['bseg', 'kpi-plan'],
+    ['coep', 'kpi-rev'],
+    ['vbap', 'kpi-otd'],
+    ['ekko', 'kpi-vendor'],
+    ['kpi-plan', 'cds-fi'],
+    ['kpi-rev', 'cds-co'],
+    ['kpi-otd', 'bdc-fin'],
+    ['kpi-vendor', 'bdc-fin'],
+    ['dim-plant', 'fiori'],
+    ['cds-fi', 'pattern-cds'],
+    ['cds-co', 'pattern-cds'],
+    ['bdc-fin', 'wave-1'],
+    ['fiori', 'wave-1'],
+    ['sac', 'pattern-bdc'],
+    ['wave-1', 'policy'],
+    ['wave-2', 'security'],
+    ['pattern-bdc', 'ops']
+  ];
+
+  const isNodeActive = (node) => activeLayer === 'all' || node.layer === activeLayer;
+
+  const buttonStyle = (active) => ({
+    padding: '6px 12px',
+    borderRadius: radii.md,
+    border: `1px solid ${active ? palette.primary : palette.border}`,
+    background: active ? palette.primarySoft : palette.surface,
+    color: active ? palette.primaryStrong : palette.text,
+    cursor: 'pointer',
+    fontWeight: 600,
+    fontSize: 12
+  });
+
+  return (
+    <Section title="SAP ECC to S/4HANA Migration Knowledge Graph" subtitle="Migration paths, dependencies, and cross-functional relationships">
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
+        {layers.map(layer => (
+          <button key={layer.id} onClick={() => setActiveLayer(layer.id)} style={buttonStyle(activeLayer === layer.id)}>
+            {layer.label}
+          </button>
+        ))}
+      </div>
+      <div style={{ overflow: 'auto', borderRadius: radii.lg, border: `1px solid ${palette.border}`, background: palette.surface }}>
+        <svg width={1120} height={520} viewBox="0 0 1120 520">
+          {edges.map((edge, idx) => {
+            const from = nodes.find(n => n.id === edge[0]);
+            const to = nodes.find(n => n.id === edge[1]);
+            const showEdge = activeLayer === 'all' || (from.layer === activeLayer && to.layer === activeLayer);
+            return (
+              <line
+                key={idx}
+                x1={from.x + 80}
+                y1={from.y + 20}
+                x2={to.x}
+                y2={to.y + 20}
+                stroke={palette.border}
+                strokeWidth="1"
+                opacity={showEdge ? 0.6 : 0.15}
+              />
+            );
+          })}
+
+          {nodes.map(node => (
+            <g key={node.id} opacity={isNodeActive(node) ? 1 : 0.2}>
+              <rect x={node.x} y={node.y} width={150} height={48} rx={6} fill={layerColors[node.layer]} stroke={palette.border} />
+              {node.label.split('\n').map((line, idx) => (
+                <text key={idx} x={node.x + 8} y={node.y + 18 + idx * 14} fontSize="10" fill={palette.text}>
+                  {line}
+                </text>
+              ))}
+            </g>
+          ))}
+        </svg>
+      </div>
+      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 12, fontSize: 12, color: palette.muted }}>
+        {layers.filter(l => l.id !== 'all').map(layer => (
+          <div key={layer.id} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span style={{ width: 12, height: 12, borderRadius: 4, background: layerColors[layer.id], border: `1px solid ${palette.border}` }} />
+            <span>{layer.label}</span>
           </div>
         ))}
       </div>
     </Section>
-    <Section title="Data Sources and KPIs">
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-        <div style={{ color: palette.muted, fontSize: 13 }}>Data Sources: {report.dataSources.join(', ')}</div>
-        <div style={{ color: palette.muted, fontSize: 13 }}>KPIs: {report.kpiExamples.join(', ')}</div>
-        <div style={{ color: palette.muted, fontSize: 13 }}>Rationale: {report.rationale}</div>
+  );
+};
+
+
+// NEW: EntityRelationshipDiagram Component
+const EntityRelationshipDiagram = () => {
+  const [activeModule, setActiveModule] = useState('all');
+
+  const modules = [
+    { id: 'all', label: 'All Modules', color: palette.primary },
+    { id: 'fi', label: 'Finance (FI)', color: '#2563EB' },
+    { id: 'co', label: 'Controlling (CO)', color: '#7C3AED' },
+    { id: 'sd', label: 'Sales & Dist (SD)', color: '#16A34A' },
+    { id: 'mm', label: 'Materials (MM)', color: '#F97316' },
+    { id: 'pp', label: 'Production (PP)', color: '#EF4444' },
+    { id: 'im', label: 'Inventory (IM)', color: '#0EA5E9' }
+  ];
+
+  const nodes = [
+    { id: 'fi', label: 'Finance\n(FI)', type: 'module', x: 260, y: 200, color: '#2563EB' },
+    { id: 'co', label: 'Controlling\n(CO)', type: 'module', x: 520, y: 180, color: '#7C3AED' },
+    { id: 'sd', label: 'Sales\n(SD)', type: 'module', x: 820, y: 200, color: '#16A34A' },
+    { id: 'mm', label: 'Materials\n(MM)', type: 'module', x: 380, y: 380, color: '#F97316' },
+    { id: 'pp', label: 'Production\n(PP)', type: 'module', x: 620, y: 380, color: '#EF4444' },
+    { id: 'im', label: 'Inventory\n(IM)', type: 'module', x: 900, y: 380, color: '#0EA5E9' },
+    { id: 'r1', label: 'S_ALR_8701', type: 'report', x: 180, y: 120, color: '#93C5FD', module: 'fi' },
+    { id: 'r2', label: 'ZFI001', type: 'report', x: 140, y: 240, color: '#93C5FD', module: 'fi' },
+    { id: 'r3', label: 'KSB1', type: 'report', x: 460, y: 120, color: '#C4B5FD', module: 'co' },
+    { id: 'r4', label: 'ZCO001', type: 'report', x: 560, y: 120, color: '#C4B5FD', module: 'co' },
+    { id: 'r5', label: 'VA05', type: 'report', x: 900, y: 120, color: '#86EFAC', module: 'sd' },
+    { id: 'r6', label: 'VF05', type: 'report', x: 860, y: 240, color: '#86EFAC', module: 'sd' },
+    { id: 'r7', label: 'ME2L', type: 'report', x: 300, y: 460, color: '#FDBA74', module: 'mm' },
+    { id: 'r8', label: 'ZMM01', type: 'report', x: 420, y: 470, color: '#FDBA74', module: 'mm' },
+    { id: 'r9', label: 'CO01', type: 'report', x: 600, y: 470, color: '#FCA5A5', module: 'pp' },
+    { id: 'r10', label: 'ZPP01', type: 'report', x: 680, y: 470, color: '#FCA5A5', module: 'pp' },
+    { id: 'r11', label: 'MB52', type: 'report', x: 880, y: 470, color: '#7DD3FC', module: 'im' },
+    { id: 'e1', label: 'Plant', type: 'entity', x: 520, y: 260, color: '#F59E0B' },
+    { id: 'e2', label: 'Material', type: 'entity', x: 720, y: 300, color: '#F59E0B' },
+    { id: 'e3', label: 'Customer', type: 'entity', x: 960, y: 300, color: '#F59E0B' }
+  ];
+
+  const edges = [
+    ['fi', 'r1'], ['fi', 'r2'], ['co', 'r3'], ['co', 'r4'],
+    ['sd', 'r5'], ['sd', 'r6'], ['mm', 'r7'], ['mm', 'r8'],
+    ['pp', 'r9'], ['pp', 'r10'], ['im', 'r11'],
+    ['r1', 'e1'], ['r2', 'e1'], ['r3', 'e2'], ['r4', 'e2'],
+    ['r5', 'e3'], ['r6', 'e3'], ['r7', 'e2'], ['r8', 'e2'],
+    ['r9', 'e1'], ['r10', 'e2'], ['r11', 'e2']
+  ];
+
+  const isNodeActive = (node) => {
+    if (activeModule === 'all') return true;
+    if (node.type === 'module') return node.id === activeModule;
+    if (node.type === 'report') return node.module === activeModule;
+    return node.type === 'entity';
+  };
+
+  return (
+    <Section title="SAP 2-Level Knowledge Graph" subtitle="Level 1: Functional areas. Level 2: Reports and shared entities">
+      <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr', gap: 16 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {modules.map(module => (
+            <button
+              key={module.id}
+              onClick={() => setActiveModule(module.id)}
+              style={{
+                padding: '10px 12px',
+                borderRadius: radii.md,
+                border: `2px solid ${activeModule === module.id ? module.color : palette.border}`,
+                background: activeModule === module.id ? `${module.color}22` : palette.surface,
+                color: palette.text,
+                fontWeight: 600,
+                cursor: 'pointer',
+                textAlign: 'left'
+              }}
+            >
+              {module.label}
+            </button>
+          ))}
+          <div style={{ ...cardStyle, border: `1px solid ${palette.border}` }}>
+            <div style={{ fontWeight: 700, marginBottom: 8, color: palette.text }}>Graph Legend</div>
+            <div style={{ display: 'grid', gap: 6, fontSize: 12, color: palette.muted }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ width: 16, height: 16, borderRadius: '50%', background: palette.primary }} />
+                <span>Level 1: Modules</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ width: 12, height: 12, borderRadius: '50%', background: '#93C5FD' }} />
+                <span>Level 2: Reports</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ width: 12, height: 12, borderRadius: '50%', background: '#F59E0B' }} />
+                <span>Shared Entities</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ overflow: 'auto', borderRadius: radii.lg, border: `1px solid ${palette.border}`, background: palette.surface }}>
+          <svg width={1050} height={560} viewBox="0 0 1050 560">
+            {edges.map((edge, idx) => {
+              const from = nodes.find(n => n.id === edge[0]);
+              const to = nodes.find(n => n.id === edge[1]);
+              const active = isNodeActive(from) && isNodeActive(to);
+              return (
+                <line
+                  key={idx}
+                  x1={from.x}
+                  y1={from.y}
+                  x2={to.x}
+                  y2={to.y}
+                  stroke={edge[0].startsWith('r') ? '#F59E0B' : palette.border}
+                  strokeWidth={edge[0].startsWith('r') ? 1.5 : 1}
+                  opacity={active ? 0.7 : 0.15}
+                />
+              );
+            })}
+
+            {nodes.map(node => {
+              const active = isNodeActive(node);
+              const size = node.type === 'module' ? 34 : node.type === 'entity' ? 14 : 18;
+              return (
+                <g key={node.id} opacity={active ? 1 : 0.2}>
+                  <circle cx={node.x} cy={node.y} r={size} fill={node.color} stroke={palette.surface} strokeWidth="2" />
+                  <text x={node.x} y={node.y + (node.type === 'module' ? -2 : 3)} textAnchor="middle" fontSize={node.type === 'module' ? 10 : 8} fill={palette.text}>
+                    {node.label.split('\n').map((line, idx) => (
+                      <tspan key={idx} x={node.x} dy={idx === 0 ? 0 : 12}>
+                        {line}
+                      </tspan>
+                    ))}
+                  </text>
+                </g>
+              );
+            })}
+          </svg>
+        </div>
       </div>
     </Section>
-  </div>
+  );
+};
+
+
+// NEW: SemanticNetworkGraph Component
+const SemanticNetworkGraph = () => {
+  const [view, setView] = useState('interactive');
+  const [selectedModule, setSelectedModule] = useState(null);
+
+  const views = [
+    { id: 'list', label: 'Detailed List View' },
+    { id: 'hierarchy', label: 'Visual Hierarchy' },
+    { id: 'interactive', label: 'Interactive Graph' }
+  ];
+
+  const modules = [
+    { id: 'fi', label: 'Finance (FI)', color: '#2563EB', x: 220, y: 120 },
+    { id: 'co', label: 'Controlling (CO)', color: '#7C3AED', x: 520, y: 120 },
+    { id: 'sd', label: 'Sales & Distribution (SD)', color: '#16A34A', x: 820, y: 120 },
+    { id: 'mm', label: 'Materials Management (MM)', color: '#F97316', x: 180, y: 320 },
+    { id: 'pp', label: 'Production Planning (PP)', color: '#EF4444', x: 520, y: 360 },
+    { id: 'im', label: 'Inventory Management (IM)', color: '#0EA5E9', x: 860, y: 320 }
+  ];
+
+  const buttonStyle = (active) => ({
+    padding: '6px 12px',
+    borderRadius: radii.md,
+    border: `1px solid ${active ? palette.primary : palette.border}`,
+    background: active ? palette.primarySoft : palette.surface,
+    color: active ? palette.primaryStrong : palette.text,
+    cursor: 'pointer',
+    fontWeight: 600,
+    fontSize: 12
+  });
+
+  return (
+    <Section title="SAP ECC to S/4HANA Migration - Functional Knowledge Graph" subtitle="Module-centric view with migration insights">
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
+        {views.map(v => (
+          <button key={v.id} onClick={() => setView(v.id)} style={buttonStyle(view === v.id)}>
+            {v.label}
+          </button>
+        ))}
+      </div>
+
+      {view === 'list' && (
+        <div style={{ ...cardStyle, border: `1px solid ${palette.border}` }}>
+          <div style={{ fontWeight: 700, color: palette.text, marginBottom: 8 }}>Module Summary</div>
+          <ul style={{ margin: 0, paddingLeft: 18, color: palette.muted, fontSize: 13, lineHeight: 1.6 }}>
+            <li>Finance: 12 functions, 5 standard, 6 custom reports</li>
+            <li>Controlling: 4 functions, 11 standard, 4 custom reports</li>
+            <li>Sales & Distribution: 7 functions, 9 standard, 5 custom reports</li>
+            <li>Materials Management: 6 functions, 17 standard, 7 custom reports</li>
+            <li>Production Planning: 5 functions, 12 standard, 5 custom reports</li>
+            <li>Inventory: 4 functions, 9 standard, 4 custom reports</li>
+          </ul>
+        </div>
+      )}
+
+      {view === 'hierarchy' && (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 12 }}>
+          {modules.map(module => (
+            <div key={module.id} style={{ ...cardStyle, border: `1px solid ${palette.border}` }}>
+              <div style={{ fontWeight: 700, color: module.color }}>{module.label}</div>
+              <div style={{ color: palette.muted, fontSize: 12, marginTop: 6 }}>Functions, reports, and migration readiness</div>
+              <div style={{ marginTop: 10, height: 8, borderRadius: 6, background: palette.bg }}>
+                <div style={{ width: '72%', height: '100%', borderRadius: 6, background: module.color }} />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {view === 'interactive' && (
+        <div style={{ overflow: 'auto', borderRadius: radii.lg, border: `1px solid ${palette.border}`, background: palette.surface }}>
+          <svg width={1020} height={520} viewBox="0 0 1020 520">
+            <circle cx={520} cy={260} r={38} fill={palette.surface} stroke={palette.border} strokeWidth="2" />
+            <text x={520} y={258} textAnchor="middle" fontSize="10" fill={palette.text}>S/4HANA</text>
+            <text x={520} y={272} textAnchor="middle" fontSize="10" fill={palette.text}>Core</text>
+
+            {modules.map(module => (
+              <g key={module.id} onClick={() => setSelectedModule(module.id)} style={{ cursor: 'pointer' }}>
+                <line x1={520} y1={260} x2={module.x} y2={module.y} stroke={module.color} strokeDasharray="4 3" />
+                <circle cx={module.x} cy={module.y} r={30} fill={module.color} />
+                <text x={module.x} y={module.y + 4} textAnchor="middle" fontSize="9" fill="white">
+                  {module.label}
+                </text>
+              </g>
+            ))}
+          </svg>
+        </div>
+      )}
+
+      <div style={{ marginTop: 12, ...cardStyle, border: `1px solid ${palette.border}` }}>
+        <div style={{ fontWeight: 700, color: palette.text, marginBottom: 6 }}>Migration Insights</div>
+        <div style={{ fontSize: 12, color: palette.muted, lineHeight: 1.6 }}>
+          <div>- Finance: 4 functions, 12 standard, 6 custom reports</div>
+          <div>- Materials: 6 functions, 17 standard, 7 custom reports</div>
+          <div>- Production: 5 functions, 12 standard, 5 custom reports</div>
+          <div>- Inventory: 4 functions, 9 standard, 4 custom reports</div>
+          <div>- Total Custom Z Reports: 41 requiring analysis</div>
+        </div>
+        {selectedModule && (
+          <div style={{ marginTop: 10, fontSize: 12, color: palette.text }}>
+            Selected module: {modules.find(m => m.id === selectedModule)?.label}
+          </div>
+        )}
+      </div>
+    </Section>
+  );
+};
+
+const DemoWalkthrough = () => (
+  <Section title="Demo Walkthrough" subtitle="Step-by-step storyline to demo the full experience">
+    <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 12, alignItems: 'stretch' }}>
+      <div style={{ ...cardStyle, border: `1px solid ${palette.border}`, boxShadow: shadow }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+          <h4 style={{ margin: 0, color: palette.text }}>Live Demo Flow (8-10 mins)</h4>
+          <span style={{ padding: '4px 8px', borderRadius: radii.sm, background: palette.primarySoft, color: palette.primaryStrong, fontWeight: 700 }}>Script</span>
+        </div>
+        <ol style={{ margin: 0, paddingLeft: 18, color: palette.muted, fontSize: 13, lineHeight: 1.6 }}>
+          <li>Login as admin to show basic RBAC.</li>
+          <li>Dashboard: explain KPIs, source mix, path mix, readiness bar.</li>
+          <li>Criteria: adjust weights and re-run classification to show warnings when total ≠ 100.</li>
+          <li>Catalog: search/filter reports, open a report to show criteria scores and rationale.</li>
+          <li>Graph: switch statuses, click nodes to show lineage context and signals.</li>
+          <li>Matrix: highlight source-to-target counts, executive/risk/action callouts.</li>
+          <li>Plan: show phased delivery, exits, and governance hooks.</li>
+        </ol>
+      </div>
+      <div style={{ ...cardStyle, border: `1px solid ${palette.border}`, boxShadow: shadow }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h4 style={{ margin: 0, color: palette.text }}>Short Video / Slides</h4>
+          <span style={{ padding: '4px 8px', borderRadius: radii.sm, background: palette.bg, color: palette.muted, fontWeight: 700 }}>2-3 mins</span>
+        </div>
+        <div style={{ marginTop: 10, borderRadius: radii.md, overflow: 'hidden', border: `1px dashed ${palette.border}`, background: palette.bg, height: 220, display: 'flex', alignItems: 'center', justifyContent: 'center', color: palette.muted, textAlign: 'center', padding: 12 }}>
+          Embed your MP4 or YouTube link here. Recommended: 90s overview of problem, criteria, demo highlights, and outcomes.
+        </div>
+        <div style={{ marginTop: 10, display: 'flex', flexDirection: 'column', gap: 6, fontSize: 13 }}>
+          <a href="https://www.youtube.com/embed/placeholder" target="_blank" rel="noreferrer" style={{ color: palette.primary, fontWeight: 700 }}>Open video in new tab</a>
+          <a href="https://example.com/datanext-demo-walkthrough.pdf" target="_blank" rel="noreferrer" style={{ color: palette.primary, fontWeight: 700 }}>Download slides (PDF)</a>
+          <span style={{ color: palette.muted }}>Tip: keep slides to 6-8 pages with the same sequence as the live demo.</span>
+        </div>
+      </div>
+    </div>
+    <div style={{ marginTop: 12, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 10 }}>
+      <div style={{ ...cardStyle, border: `1px solid ${palette.border}` }}>
+        <div style={{ fontWeight: 700, color: palette.text }}>Speaker Notes</div>
+        <ul style={{ margin: '6px 0 0', paddingLeft: 16, color: palette.muted, fontSize: 13, lineHeight: 1.6 }}>
+          <li>Frame business context: S/4HANA migration, rationalization goals.</li>
+          <li>Call out decision criteria and how they map to paths.</li>
+          <li>Show one example report end-to-end (catalog → graph → matrix).</li>
+          <li>Close with plan, risks, and next approvals.</li>
+        </ul>
+      </div>
+      <div style={{ ...cardStyle, border: `1px solid ${palette.border}` }}>
+        <div style={{ fontWeight: 700, color: palette.text }}>Environment Checklist</div>
+        <ul style={{ margin: '6px 0 0', paddingLeft: 16, color: palette.muted, fontSize: 13, lineHeight: 1.6 }}>
+          <li>Demo user: admin/admin (or update to client SSO).</li>
+          <li>Dataset: at least 200 sample reports with mixed sources.</li>
+          <li>Ensure classification spinner visible (Run Classification).</li>
+          <li>Matrix and graph render within 2 seconds locally.</li>
+        </ul>
+      </div>
+      <div style={{ ...cardStyle, border: `1px solid ${palette.border}` }}>
+        <div style={{ fontWeight: 700, color: palette.text }}>What to Highlight</div>
+        <ul style={{ margin: '6px 0 0', paddingLeft: 16, color: palette.muted, fontSize: 13, lineHeight: 1.6 }}>
+          <li>Traceability: criteria weights, scores, migration path.</li>
+          <li>Actionability: risk hotspots, action queue, path counts.</li>
+          <li>Governance: owners, refresh, rationale, validation points.</li>
+          <li>Extensibility: connectors, APIs, export options.</li>
+        </ul>
+      </div>
+    </div>
+  </Section>
 );
 
 const ImplementationPlan = () => (
@@ -450,71 +1060,6 @@ const ImplementationPlan = () => (
   </Section>
 );
 
-const DemoWalkthrough = () => (
-  <Section title="Demo Walkthrough" subtitle="Step-by-step storyline to demo the full experience">
-    <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 12, alignItems: 'stretch' }}>
-      <div style={{ ...cardStyle, border: `1px solid \${palette.border}`, boxShadow: shadow }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-          <h4 style={{ margin: 0, color: palette.text }}>Live Demo Flow (8-10 mins)</h4>
-          <span style={{ padding: '4px 8px', borderRadius: radii.sm, background: palette.primarySoft, color: palette.primaryStrong, fontWeight: 700 }}>Script</span>
-        </div>
-        <ol style={{ margin: 0, paddingLeft: 18, color: palette.muted, fontSize: 13, lineHeight: 1.6 }}>
-          <li>Login as admin to show basic RBAC.</li>
-          <li>Dashboard: explain KPIs, source mix, path mix, readiness bar.</li>
-          <li>Criteria: adjust weights and re-run classification to show warnings when total ≠ 100.</li>
-          <li>Catalog: search/filter reports, open a report to show criteria scores and rationale.</li>
-          <li>Graph: switch statuses, click nodes to show lineage context and signals.</li>
-          <li>Matrix: highlight source-to-target counts, executive/risk/action callouts.</li>
-          <li>Plan: show phased delivery, exits, and governance hooks.</li>
-        </ol>
-      </div>
-      <div style={{ ...cardStyle, border: `1px solid \${palette.border}`, boxShadow: shadow }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h4 style={{ margin: 0, color: palette.text }}>Short Video / Slides</h4>
-          <span style={{ padding: '4px 8px', borderRadius: radii.sm, background: palette.bg, color: palette.muted, fontWeight: 700 }}>2-3 mins</span>
-        </div>
-        <div style={{ marginTop: 10, borderRadius: radii.md, overflow: 'hidden', border: `1px dashed \${palette.border}`, background: palette.bg, height: 220, display: 'flex', alignItems: 'center', justifyContent: 'center', color: palette.muted, textAlign: 'center', padding: 12 }}>
-          Embed your MP4 or YouTube link here. Recommended: 90s overview of problem, criteria, demo highlights, and outcomes.
-        </div>
-        <div style={{ marginTop: 10, display: 'flex', flexDirection: 'column', gap: 6, fontSize: 13 }}>
-          <a href="https://www.youtube.com/embed/placeholder" target="_blank" rel="noreferrer" style={{ color: palette.primary, fontWeight: 700 }}>Open video in new tab</a>
-          <a href="https://example.com/datanext-demo-walkthrough.pdf" target="_blank" rel="noreferrer" style={{ color: palette.primary, fontWeight: 700 }}>Download slides (PDF)</a>
-          <span style={{ color: palette.muted }}>Tip: keep slides to 6-8 pages with the same sequence as the live demo.</span>
-        </div>
-      </div>
-    </div>
-    <div style={{ marginTop: 12, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 10 }}>
-      <div style={{ ...cardStyle, border: `1px solid \${palette.border}` }}>
-        <div style={{ fontWeight: 700, color: palette.text }}>Speaker Notes</div>
-        <ul style={{ margin: '6px 0 0', paddingLeft: 16, color: palette.muted, fontSize: 13, lineHeight: 1.6 }}>
-          <li>Frame business context: S/4HANA migration, rationalization goals.</li>
-          <li>Call out decision criteria and how they map to paths.</li>
-          <li>Show one example report end-to-end (catalog → graph → matrix).</li>
-          <li>Close with plan, risks, and next approvals.</li>
-        </ul>
-      </div>
-      <div style={{ ...cardStyle, border: `1px solid \${palette.border}` }}>
-        <div style={{ fontWeight: 700, color: palette.text }}>Environment Checklist</div>
-        <ul style={{ margin: '6px 0 0', paddingLeft: 16, color: palette.muted, fontSize: 13, lineHeight: 1.6 }}>
-          <li>Demo user: admin/admin (or update to client SSO).</li>
-          <li>Dataset: at least 200 sample reports with mixed sources.</li>
-          <li>Ensure classification spinner visible (Run Classification).</li>
-          <li>Matrix and graph render within 2 seconds locally.</li>
-        </ul>
-      </div>
-      <div style={{ ...cardStyle, border: `1px solid \${palette.border}` }}>
-        <div style={{ fontWeight: 700, color: palette.text }}>What to Highlight</div>
-        <ul style={{ margin: '6px 0 0', paddingLeft: 16, color: palette.muted, fontSize: 13, lineHeight: 1.6 }}>
-          <li>Traceability: criteria weights, scores, migration path.</li>
-          <li>Actionability: risk hotspots, action queue, path counts.</li>
-          <li>Governance: owners, refresh, rationale, validation points.</li>
-          <li>Extensibility: connectors, APIs, export options.</li>
-        </ul>
-      </div>
-    </div>
-  </Section>
-);
-
 const KnowledgeBaseFlow = () => {
   const steps = [
     { id: 'reports', label: 'Reports', desc: 'BW/BEx, ABAP, Databricks, BO/BI', required: true },
@@ -542,7 +1087,7 @@ const KnowledgeBaseFlow = () => {
     alignItems: 'center',
     gap: 6,
     borderRadius: radii.md,
-    border: primary ? 'none' : `1px solid \${palette.border}`,
+    border: primary ? 'none' : `1px solid ${palette.border}`,
     background: primary ? palette.primary : palette.surface,
     color: primary ? '#fff' : palette.text,
     cursor: 'pointer',
@@ -554,13 +1099,13 @@ const KnowledgeBaseFlow = () => {
     <Section title="Ingestion to Insights" subtitle="Upload artifacts for each stage to enrich the knowledge base and graph">
       <div style={{ display: 'grid', gridAutoFlow: 'column', gridAutoColumns: 'minmax(260px, 1fr)', gap: 12, overflowX: 'auto', paddingBottom: 8 }}>
         {steps.map((step, idx) => {
-          const inputId = `kb-upload-\${step.id}`;
+          const inputId = `kb-upload-${step.id}`;
           return (
             <div
               key={step.id}
               style={{
                 ...cardStyle,
-                border: `1px solid \${palette.border}`,
+                border: `1px solid ${palette.border}`,
                 boxShadow: shadow,
                 minHeight: 150,
                 display: 'flex',
@@ -583,13 +1128,12 @@ const KnowledgeBaseFlow = () => {
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'row', gap: 8, alignItems: 'center', flexWrap: 'wrap', justifyContent: 'flex-end', width: '100%', overflow: 'hidden' }}>
                   <button style={{ ...buttonStyle(false), minWidth: 32, justifyContent: 'center', padding: '6px 8px', whiteSpace: 'nowrap' }}>
-                    <span role="img" aria-label="comment">💬</span>
+                    Comment
                   </button>
                   <button
-                    style={{ ...buttonStyle(true), minWidth: 88, justifyContent: 'center', padding: '6px 8px', whiteSpace: 'nowrap' }}
+                    style={{ ...buttonStyle(true), minWidth: 92, justifyContent: 'center', padding: '6px 8px', whiteSpace: 'nowrap' }}
                     onClick={() => document.getElementById(inputId)?.click()}
                   >
-                    <span role="img" aria-label="upload">⬆️</span>
                     Upload
                   </button>
                   <input id={inputId} type="file" style={{ display: 'none' }} onChange={(e) => onUpload(step.id, e)} />
@@ -597,9 +1141,9 @@ const KnowledgeBaseFlow = () => {
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 10 }}>
                 <span style={{ fontSize: 12, color: uploads[step.id] ? palette.primaryStrong : palette.muted, fontWeight: 700 }}>
-                  {uploads[step.id] ? `Uploaded: \${uploads[step.id]}` : 'No file yet'}
+                  {uploads[step.id] ? `Uploaded: ${uploads[step.id]}` : 'No file yet'}
                 </span>
-                <span style={{ fontSize: 18, color: palette.muted }}>{idx === steps.length - 1 ? '' : '→'}</span>
+                <span style={{ fontSize: 18, color: palette.muted }}>{idx === steps.length - 1 ? '' : '->'}</span>
               </div>
             </div>
           );
@@ -623,7 +1167,6 @@ const KnowledgeBaseNodes = ({ functionalAreas }) => {
   const centerX = width / 2;
   const centerY = height / 2;
 
-  // Define node categories based on the KG document
   const nodeCategories = {
     core: {
       label: 'Knowledge\nGraph',
@@ -633,57 +1176,57 @@ const KnowledgeBaseNodes = ({ functionalAreas }) => {
       description: 'Central hub connecting all entities in the SAP migration knowledge base'
     },
     systems: [
-      { 
-        id: 'ecc', 
-        label: 'SAP ECC', 
-        type: 'ERP', 
-        color: '#F59E0B', 
-        icon: '🏢',
+      {
+        id: 'ecc',
+        label: 'SAP ECC',
+        type: 'ERP',
+        color: '#F59E0B',
+        icon: String.fromCharCode(0x1F3E2),
         description: 'Legacy SAP ECC tables and structures (VBAK, VBAP, BSEG, MSEG)',
         entities: 156
       },
-      { 
-        id: 'bw', 
-        label: 'SAP BW', 
-        type: 'DWH', 
-        color: '#3B82F6', 
-        icon: '📊',
+      {
+        id: 'bw',
+        label: 'SAP BW',
+        type: 'DWH',
+        color: '#3B82F6',
+        icon: String.fromCharCode(0x1F4CA),
         description: 'BW InfoProviders, ADSOs, CompositeProviders, and transformations',
         entities: 89
       },
-      { 
-        id: 'dbx', 
-        label: 'Databricks', 
-        type: 'Lakehouse', 
-        color: '#8B5CF6', 
-        icon: '⚡',
+      {
+        id: 'dbx',
+        label: 'Databricks',
+        type: 'Lakehouse',
+        color: '#8B5CF6',
+        icon: String.fromCharCode(0x26A1),
         description: 'Databricks tables, views, and Spark transformation jobs',
         entities: 67
       }
     ],
     reporting: [
-      { 
-        id: 'report', 
-        label: 'Reports', 
-        icon: '📄', 
+      {
+        id: 'report',
+        label: 'Reports',
+        icon: String.fromCharCode(0x1F4C4),
         color: '#10B981',
         description: 'Business-facing reports across all functional areas',
         entities: 234,
         relationships: ['SOURCES_FROM DataObject', 'HAS_METRIC Metric', 'DOCUMENTED_BY Document']
       },
-      { 
-        id: 'metric', 
-        label: 'Metrics/KPIs', 
-        icon: '📈', 
+      {
+        id: 'metric',
+        label: 'Metrics/KPIs',
+        icon: String.fromCharCode(0x1F4C8),
         color: '#EC4899',
         description: 'Key performance indicators and calculated metrics',
         entities: 187,
         relationships: ['DERIVED_BY BusinessRule', 'STANDARDIZED_BY GlossaryTerm']
       },
-      { 
-        id: 'dimension', 
-        label: 'Dimensions', 
-        icon: '🔢', 
+      {
+        id: 'dimension',
+        label: 'Dimensions',
+        icon: String.fromCharCode(0x1F522),
         color: '#6366F1',
         description: 'Dimensional attributes like Plant, Customer, Material, Time',
         entities: 45,
@@ -691,28 +1234,28 @@ const KnowledgeBaseNodes = ({ functionalAreas }) => {
       }
     ],
     data: [
-      { 
-        id: 'dataobj', 
-        label: 'Data Objects', 
-        icon: '🗃️', 
+      {
+        id: 'dataobj',
+        label: 'Data Objects',
+        icon: String.fromCharCode(0x1F5C3),
         color: '#14B8A6',
         description: 'Tables, views, InfoProviders across all source systems',
         entities: 312,
         relationships: ['HOSTED_IN System', 'HAS_COLUMN DataColumn']
       },
-      { 
-        id: 'column', 
-        label: 'Data Columns', 
-        icon: '📋', 
+      {
+        id: 'column',
+        label: 'Data Columns',
+        icon: String.fromCharCode(0x1F4CB),
         color: '#8B5CF6',
         description: 'Individual fields and attributes within data objects',
         entities: 1847,
         relationships: ['BELONGS_TO DataObject', 'USED_BY BusinessRule']
       },
-      { 
-        id: 'transform', 
-        label: 'Transformations', 
-        icon: '⚙️', 
+      {
+        id: 'transform',
+        label: 'Transformations',
+        icon: String.fromCharCode(0x2699),
         color: '#F97316',
         description: 'ETL/ELT processes, BW transformations, Spark jobs',
         entities: 156,
@@ -720,28 +1263,28 @@ const KnowledgeBaseNodes = ({ functionalAreas }) => {
       }
     ],
     semantics: [
-      { 
-        id: 'rule', 
-        label: 'Business Rules', 
-        icon: '📐', 
+      {
+        id: 'rule',
+        label: 'Business Rules',
+        icon: String.fromCharCode(0x1F4D0),
         color: '#EF4444',
         description: 'Business logic definitions and calculation rules',
         entities: 203,
         relationships: ['USES_COLUMN DataColumn', 'DEFINES Metric', 'DOCUMENTED_BY Document']
       },
-      { 
-        id: 'calc', 
-        label: 'Calculations', 
-        icon: '🧮', 
+      {
+        id: 'calc',
+        label: 'Calculations',
+        icon: String.fromCharCode(0x1F9EE),
         color: '#06B6D4',
         description: 'Formula representations and computational logic',
         entities: 178,
         relationships: ['PART_OF BusinessRule', 'USES DataColumn']
       },
-      { 
-        id: 'glossary', 
-        label: 'Glossary Terms', 
-        icon: '📖', 
+      {
+        id: 'glossary',
+        label: 'Glossary Terms',
+        icon: String.fromCharCode(0x1F4D6),
         color: '#84CC16',
         description: 'Standardized business terminology and definitions',
         entities: 134,
@@ -749,28 +1292,28 @@ const KnowledgeBaseNodes = ({ functionalAreas }) => {
       }
     ],
     documentation: [
-      { 
-        id: 'docs', 
-        label: 'Documents', 
-        icon: '📑', 
+      {
+        id: 'docs',
+        label: 'Documents',
+        icon: String.fromCharCode(0x1F4D1),
         color: '#A855F7',
         description: 'Design docs, specifications, BRD/TRD, schemas',
         entities: 267,
         relationships: ['DOCUMENTS Report', 'SPECIFIES_RULE BusinessRule']
       },
-      { 
-        id: 'test', 
-        label: 'Test Cases', 
-        icon: '✅', 
+      {
+        id: 'test',
+        label: 'Test Cases',
+        icon: String.fromCharCode(0x2705),
         color: '#22C55E',
         description: 'Validation queries, reconciliation checks, QA tests',
         entities: 189,
         relationships: ['VALIDATES_METRIC Metric', 'TESTS Report']
       },
-      { 
-        id: 'owner', 
-        label: 'Owners', 
-        icon: '👤', 
+      {
+        id: 'owner',
+        label: 'Owners',
+        icon: String.fromCharCode(0x1F464),
         color: '#F472B6',
         description: 'Business and IT ownership assignments',
         entities: 78,
@@ -779,7 +1322,6 @@ const KnowledgeBaseNodes = ({ functionalAreas }) => {
     ]
   };
 
-  // Calculate positions in rings
   const getRingPosition = (categoryIndex, itemIndex, totalInCategory, ringRadius) => {
     const angle = (itemIndex / totalInCategory) * Math.PI * 2 - Math.PI / 2 + (categoryIndex * 0.3);
     return {
@@ -788,7 +1330,6 @@ const KnowledgeBaseNodes = ({ functionalAreas }) => {
     };
   };
 
-  // Define rings
   const rings = [
     { items: nodeCategories.systems, radius: 140, label: 'Systems & Platform', color: '#F59E0B' },
     { items: nodeCategories.reporting, radius: 220, label: 'Reporting Layer', color: '#10B981' },
@@ -797,13 +1338,11 @@ const KnowledgeBaseNodes = ({ functionalAreas }) => {
     { items: nodeCategories.documentation, radius: 460, label: 'Process & Governance', color: '#A855F7' }
   ];
 
-  // Generate connections based on KG relationships
   const generateConnections = () => {
     const connections = [];
     rings.forEach((ring, ringIdx) => {
       ring.items.forEach((item, itemIdx) => {
         const pos = getRingPosition(ringIdx, itemIdx, ring.items.length, ring.radius);
-        // Connect to center
         connections.push({
           from: { x: centerX, y: centerY },
           to: pos,
@@ -812,8 +1351,7 @@ const KnowledgeBaseNodes = ({ functionalAreas }) => {
           source: 'core',
           target: item.id
         });
-        
-        // Connect to next item in ring
+
         if (itemIdx < ring.items.length - 1) {
           const nextPos = getRingPosition(ringIdx, itemIdx + 1, ring.items.length, ring.radius);
           connections.push({
@@ -826,7 +1364,6 @@ const KnowledgeBaseNodes = ({ functionalAreas }) => {
           });
         }
 
-        // Connect to inner ring
         if (ringIdx > 0) {
           const innerRing = rings[ringIdx - 1];
           const innerPos = getRingPosition(ringIdx - 1, itemIdx % innerRing.items.length, innerRing.items.length, innerRing.radius);
@@ -846,7 +1383,6 @@ const KnowledgeBaseNodes = ({ functionalAreas }) => {
 
   const connections = generateConnections();
 
-  // Handle mouse wheel zoom
   const handleWheel = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -855,14 +1391,12 @@ const KnowledgeBaseNodes = ({ functionalAreas }) => {
     setZoom(newZoom);
   };
 
-  // Handle pan start
   const handleMouseDown = (e) => {
     e.preventDefault();
     setIsDragging(true);
     setDragStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
   };
 
-  // Handle pan move
   const handleMouseMove = (e) => {
     if (isDragging) {
       setPan({
@@ -872,25 +1406,21 @@ const KnowledgeBaseNodes = ({ functionalAreas }) => {
     }
   };
 
-  // Handle pan end
   const handleMouseUp = () => {
     setIsDragging(false);
   };
 
-  // Reset view
   const resetView = () => {
     setZoom(1);
     setPan({ x: 0, y: 0 });
     setSelectedNode(null);
   };
 
-  // Zoom to fit
   const zoomToFit = () => {
     setZoom(0.8);
     setPan({ x: 0, y: 0 });
   };
 
-  // Get highlighted connections
   const getHighlightedConnections = () => {
     if (!hoveredNode && !selectedNode) return [];
     const nodeId = selectedNode || hoveredNode;
@@ -899,29 +1429,26 @@ const KnowledgeBaseNodes = ({ functionalAreas }) => {
 
   const highlightedConnections = getHighlightedConnections();
 
-  // Calculate scaled dimensions
   const scaledWidth = width * zoom;
   const scaledHeight = height * zoom;
 
   return (
     <Section title="Knowledge Graph Architecture" subtitle="Interactive node types and relationships - Zoom with scroll, drag to pan, click nodes for details">
-      <div 
-        style={{ 
-          position: 'relative', 
-          background: palette.bg, 
-          borderRadius: radii.lg, 
-          border: `1px solid \${palette.border}`, 
+      <div
+        style={{
+          position: 'relative',
+          background: palette.bg,
+          borderRadius: radii.lg,
+          border: `1px solid \${palette.border}`,
           overflow: 'hidden'
         }}
       >
-        
-        {/* Controls */}
-        <div style={{ 
-          position: 'absolute', 
-          top: 16, 
-          right: 16, 
-          zIndex: 10, 
-          display: 'flex', 
+        <div style={{
+          position: 'absolute',
+          top: 16,
+          right: 16,
+          zIndex: 10,
+          display: 'flex',
           gap: 8,
           flexWrap: 'wrap',
           maxWidth: 300
@@ -956,7 +1483,7 @@ const KnowledgeBaseNodes = ({ functionalAreas }) => {
             }}
             title="Zoom Out"
           >
-            −
+            -
           </button>
           <button
             onClick={zoomToFit}
@@ -1005,10 +1532,9 @@ const KnowledgeBaseNodes = ({ functionalAreas }) => {
           </div>
         </div>
 
-        {/* Scrollable SVG Container */}
-        <div 
+        <div
           ref={containerRef}
-          style={{ 
+          style={{
             width: '100%',
             height: 550,
             overflow: 'auto',
@@ -1031,9 +1557,9 @@ const KnowledgeBaseNodes = ({ functionalAreas }) => {
               transition: isDragging ? 'none' : 'transform 0.1s ease-out'
             }}
           >
-            <svg 
-              width={scaledWidth} 
-              height={scaledHeight} 
+            <svg
+              width={scaledWidth}
+              height={scaledHeight}
               viewBox={`0 0 \${width} \${height}`}
               style={{
                 display: 'block'
@@ -1056,28 +1582,25 @@ const KnowledgeBaseNodes = ({ functionalAreas }) => {
                 </filter>
               </defs>
 
-              {/* Background glow */}
               <circle cx={centerX} cy={centerY} r="480" fill="url(#kg-architecture-glow)" />
 
-              {/* Ring labels background arcs */}
               {rings.map((ring, idx) => (
                 <g key={`ring-\${idx}`}>
-                  <circle 
-                    cx={centerX} 
-                    cy={centerY} 
-                    r={ring.radius} 
-                    fill="none" 
-                    stroke={ring.color} 
-                    strokeWidth="1" 
-                    strokeDasharray="4 4" 
+                  <circle
+                    cx={centerX}
+                    cy={centerY}
+                    r={ring.radius}
+                    fill="none"
+                    stroke={ring.color}
+                    strokeWidth="1"
+                    strokeDasharray="4 4"
                     opacity="0.2"
                   />
                 </g>
               ))}
 
-              {/* Connections - normal */}
               {connections.map((conn, idx) => {
-                const isHighlighted = highlightedConnections.some(hc => 
+                const isHighlighted = highlightedConnections.some(hc =>
                   hc.source === conn.source && hc.target === conn.target
                 );
                 return (
@@ -1095,7 +1618,6 @@ const KnowledgeBaseNodes = ({ functionalAreas }) => {
                 );
               })}
 
-              {/* Center node */}
               <g
                 onMouseEnter={() => setHoveredNode('core')}
                 onMouseLeave={() => setHoveredNode(null)}
@@ -1105,32 +1627,32 @@ const KnowledgeBaseNodes = ({ functionalAreas }) => {
                 }}
                 style={{ cursor: 'pointer' }}
               >
-                <circle 
-                  cx={centerX} 
-                  cy={centerY} 
-                  r={nodeCategories.core.size} 
-                  fill={nodeCategories.core.color} 
+                <circle
+                  cx={centerX}
+                  cy={centerY}
+                  r={nodeCategories.core.size}
+                  fill={nodeCategories.core.color}
                   filter={hoveredNode === 'core' || selectedNode === 'core' ? "url(#node-glow)" : "url(#node-shadow)"}
                   opacity={hoveredNode === 'core' || selectedNode === 'core' ? 1 : 0.9}
                   style={{ transition: 'all 0.2s ease' }}
                 />
-                <text 
-                  x={centerX} 
-                  y={centerY - 5} 
-                  textAnchor="middle" 
-                  fill="white" 
-                  fontSize="13" 
+                <text
+                  x={centerX}
+                  y={centerY - 5}
+                  textAnchor="middle"
+                  fill="white"
+                  fontSize="13"
                   fontWeight="700"
                   pointerEvents="none"
                 >
                   Knowledge
                 </text>
-                <text 
-                  x={centerX} 
-                  y={centerY + 10} 
-                  textAnchor="middle" 
-                  fill="white" 
-                  fontSize="13" 
+                <text
+                  x={centerX}
+                  y={centerY + 10}
+                  textAnchor="middle"
+                  fill="white"
+                  fontSize="13"
                   fontWeight="700"
                   pointerEvents="none"
                 >
@@ -1138,7 +1660,6 @@ const KnowledgeBaseNodes = ({ functionalAreas }) => {
                 </text>
               </g>
 
-              {/* Ring nodes */}
               {rings.map((ring, ringIdx) => (
                 <g key={`ring-nodes-\${ringIdx}`}>
                   {ring.items.map((item, itemIdx) => {
@@ -1146,10 +1667,10 @@ const KnowledgeBaseNodes = ({ functionalAreas }) => {
                     const nodeSize = 32;
                     const isHovered = hoveredNode === item.id;
                     const isSelected = selectedNode === item.id;
-                    
+
                     return (
-                      <g 
-                        key={item.id} 
+                      <g
+                        key={item.id}
                         onMouseEnter={() => setHoveredNode(item.id)}
                         onMouseLeave={() => setHoveredNode(null)}
                         onClick={(e) => {
@@ -1216,12 +1737,11 @@ const KnowledgeBaseNodes = ({ functionalAreas }) => {
                 </g>
               ))}
 
-              {/* Ring labels */}
               {rings.map((ring, idx) => {
                 const labelAngle = Math.PI / 4;
                 const labelX = centerX + Math.cos(labelAngle) * (ring.radius + 25);
                 const labelY = centerY + Math.sin(labelAngle) * (ring.radius + 25);
-                
+
                 return (
                   <g key={`ring-label-\${idx}`}>
                     <rect
@@ -1252,7 +1772,6 @@ const KnowledgeBaseNodes = ({ functionalAreas }) => {
           </div>
         </div>
 
-        {/* Tooltip / Detail Panel */}
         {(hoveredNode || selectedNode) && (
           <div style={{
             position: 'absolute',
@@ -1271,11 +1790,10 @@ const KnowledgeBaseNodes = ({ functionalAreas }) => {
             {(() => {
               const nodeId = selectedNode || hoveredNode;
               let nodeData;
-              
+
               if (nodeId === 'core') {
                 nodeData = nodeCategories.core;
               } else {
-                // Find in rings
                 for (const ring of rings) {
                   const found = ring.items.find(item => item.id === nodeId);
                   if (found) {
@@ -1302,7 +1820,7 @@ const KnowledgeBaseNodes = ({ functionalAreas }) => {
                       fontSize: 24,
                       flexShrink: 0
                     }}>
-                      {nodeData.icon || '🔷'}
+                      {nodeData.icon || String.fromCharCode(0x1F537)}
                     </div>
                     <div>
                       <div style={{ fontWeight: 800, color: palette.text, fontSize: 16 }}>
@@ -1315,7 +1833,7 @@ const KnowledgeBaseNodes = ({ functionalAreas }) => {
                       )}
                     </div>
                   </div>
-                  
+
                   <div style={{ color: palette.muted, fontSize: 13, lineHeight: 1.5, marginBottom: 12 }}>
                     {nodeData.description}
                   </div>
@@ -1361,7 +1879,6 @@ const KnowledgeBaseNodes = ({ functionalAreas }) => {
           </div>
         )}
 
-        {/* Instructions hint */}
         <div style={{
           position: 'absolute',
           bottom: 16,
@@ -1376,17 +1893,14 @@ const KnowledgeBaseNodes = ({ functionalAreas }) => {
         }}>
         </div>
 
-        {/* Legend and relationship details */}
-        <div style={{ 
-          padding: '16px 20px', 
-          borderTop: `1px solid \${palette.border}`, 
+        <div style={{
+          padding: '16px 20px',
+          borderTop: `1px solid \${palette.border}`,
           background: palette.surface,
           maxHeight: 300,
           overflowY: 'auto'
         }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
-            
-            {/* Node Types Legend */}
             <div>
               <div style={{ fontWeight: 700, color: palette.text, marginBottom: 10, fontSize: 13 }}>Core Node Types</div>
               <div style={{ display: 'grid', gap: 8 }}>
@@ -1397,15 +1911,15 @@ const KnowledgeBaseNodes = ({ functionalAreas }) => {
                     </div>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                       {items.map(item => (
-                        <div 
-                          key={item.id} 
+                        <div
+                          key={item.id}
                           onClick={() => setSelectedNode(item.id)}
-                          style={{ 
-                            display: 'flex', 
-                            alignItems: 'center', 
-                            gap: 6, 
-                            padding: '4px 10px', 
-                            borderRadius: radii.sm, 
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 6,
+                            padding: '4px 10px',
+                            borderRadius: radii.sm,
                             border: `1px solid \${item.color}40`,
                             background: selectedNode === item.id ? `\${item.color}30` : `\${item.color}15`,
                             cursor: 'pointer',
@@ -1428,7 +1942,6 @@ const KnowledgeBaseNodes = ({ functionalAreas }) => {
               </div>
             </div>
 
-            {/* Key Relationships */}
             <div>
               <div style={{ fontWeight: 700, color: palette.text, marginBottom: 10, fontSize: 13 }}>Key Relationships</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 12, color: palette.muted }}>
@@ -1452,7 +1965,6 @@ const KnowledgeBaseNodes = ({ functionalAreas }) => {
               </div>
             </div>
 
-            {/* Example Queries */}
             <div>
               <div style={{ fontWeight: 700, color: palette.text, marginBottom: 10, fontSize: 13 }}>Example KG Queries</div>
               <ul style={{ margin: 0, paddingLeft: 18, color: palette.muted, fontSize: 12, lineHeight: 1.7 }}>
@@ -1464,34 +1976,32 @@ const KnowledgeBaseNodes = ({ functionalAreas }) => {
                 <li>Map all BW objects to Databricks equivalents</li>
               </ul>
             </div>
-
           </div>
         </div>
 
-        {/* Functional Area Coverage */}
-        <div style={{ 
-          padding: '16px 20px', 
-          borderTop: `1px solid \${palette.border}`, 
-          background: palette.bg, 
-          maxHeight: 220, 
-          overflowY: 'auto' 
+        <div style={{
+          padding: '16px 20px',
+          borderTop: `1px solid \${palette.border}`,
+          background: palette.bg,
+          maxHeight: 220,
+          overflowY: 'auto'
         }}>
           <div style={{ fontWeight: 700, color: palette.text, marginBottom: 12, fontSize: 13 }}>Functional Area Coverage</div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
             {functionalAreas.map(area => {
               const initials = area.split(' ').map(w => w[0]).join('').slice(0, 3).toUpperCase();
-              const reportCount = Math.floor(Math.random() * 30) + 10; // Mock data
-              
+              const reportCount = Math.floor(Math.random() * 30) + 10;
+
               return (
-                <div 
-                  key={area} 
-                  style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    gap: 10, 
-                    padding: '8px 14px', 
-                    borderRadius: radii.md, 
-                    border: `1px solid \${palette.border}`, 
+                <div
+                  key={area}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 10,
+                    padding: '8px 14px',
+                    borderRadius: radii.md,
+                    border: `1px solid \${palette.border}`,
                     background: palette.surface,
                     boxShadow: shadow,
                     transition: 'all 0.2s ease',
@@ -1506,18 +2016,18 @@ const KnowledgeBaseNodes = ({ functionalAreas }) => {
                     e.currentTarget.style.boxShadow = shadow;
                   }}
                 >
-                  <div style={{ 
-                    width: 32, 
-                    height: 32, 
-                    borderRadius: '50%', 
-                    background: palette.primarySoft, 
-                    border: `2px solid \${palette.primary}`, 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    justifyContent: 'center', 
-                    fontWeight: 800, 
-                    color: palette.primaryStrong, 
-                    fontSize: 11 
+                  <div style={{
+                    width: 32,
+                    height: 32,
+                    borderRadius: '50%',
+                    background: palette.primarySoft,
+                    border: `2px solid \${palette.primary}`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontWeight: 800,
+                    color: palette.primaryStrong,
+                    fontSize: 11
                   }}>
                     {initials}
                   </div>
@@ -1530,7 +2040,6 @@ const KnowledgeBaseNodes = ({ functionalAreas }) => {
             })}
           </div>
         </div>
-
       </div>
     </Section>
   );
@@ -1539,7 +2048,7 @@ const KnowledgeBaseNodes = ({ functionalAreas }) => {
 const Sidebar = ({ active, setActive }) => {
   const nav = [
     { id: 'catalog', label: 'Inputs' },
-    { id: 'graph', label: 'Knowledge Graph' },
+    { id: 'knowledge-graphs', label: 'Knowledge Graphs'},
     { id: 'dashboard', label: 'Summary' },
     { id: 'criteria', label: 'Decision Framework' },
     { id: 'status', label: 'Status & Migration' },
@@ -1547,6 +2056,7 @@ const Sidebar = ({ active, setActive }) => {
     { id: 'walkthrough', label: 'Demo Walkthrough' },
     { id: 'plan', label: 'Administration' }
   ];
+
   return (
     <aside style={{ width: 240, position: 'fixed', top: 0, bottom: 0, left: 0, background: palette.surface, borderRight: `1px solid \${palette.border}`, padding: 20 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
@@ -1640,6 +2150,7 @@ export default function DataNextApp() {
               {activeView === 'criteria' && 'Decision Criteria Framework'}
               {activeView === 'status' && 'Status & Migration'}
               {activeView === 'graph' && 'Knowledge Graph Explorer'}
+              {activeView === 'knowledge-graphs' && 'Knowledge Graphs'}
               {activeView === 'matrix' && 'Migration Recommendation Matrix'}
               {activeView === 'walkthrough' && 'Demo Walkthrough'}
               {activeView === 'plan' && 'Administration'}
@@ -1666,6 +2177,7 @@ export default function DataNextApp() {
               <StatsCard label="Retire" value={stats.retire} color={palette.warning} subValue={`${Math.round(stats.retire / stats.total * 100)}% retiring`} />
               <StatsCard label="Pending Review" value={stats.pending} color={palette.neutral} subValue="Balance to classify" />
             </div>
+
             <Section title="Readiness Snapshot" subtitle="Visual summary of migration readiness and source mix">
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 12 }}>
                 <div style={{ ...cardStyle, border: `1px solid \${palette.border}` }}>
@@ -1705,6 +2217,7 @@ export default function DataNextApp() {
                 </div>
               </div>
             </Section>
+
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 16 }}>
               <Section title="Reports by Source" subtitle="Volume split across legacy systems">
                 {Object.entries(stats.bySource).map(([source, count]) => (
@@ -1719,6 +2232,7 @@ export default function DataNextApp() {
                   </div>
                 ))}
               </Section>
+
               <Section title="Migration Path Summary" subtitle="Recommended landing by decision criteria">
                 {Object.entries(stats.byPath).map(([path, count]) => (
                   <div key={path} style={{ marginBottom: 12 }}>
@@ -1733,9 +2247,11 @@ export default function DataNextApp() {
                 ))}
               </Section>
             </div>
+
             <Section title="Knowledge Graph Overview" subtitle="Lineage and dependency view across BW, ABAP, and Databricks">
               <KnowledgeGraph reports={seedReports} filter="All" onNodeClick={setSelectedReport} isClassifying={isClassifying} />
             </Section>
+
             <KnowledgeBaseFlow />
           </>
         )}
@@ -1754,6 +2270,54 @@ export default function DataNextApp() {
           <Section title="Status & Migration" subtitle="Full catalog view with status and migration path">
             <ReportCatalog reports={seedReports} onRowClick={setSelectedReport} showStatusMigration />
           </Section>
+        )}
+
+        {activeView === 'knowledge-graphs' && (
+          <>
+            <div style={{ ...cardStyle, border: `1px solid ${palette.border}` }}>
+              <div style={{ fontWeight: 700, color: palette.text }}>Jump to section</div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 10 }}>
+                {[
+                  { id: 'kg-module-clusters', label: 'Module Clusters' },
+                  { id: 'kg-migration-knowledge', label: 'Migration Knowledge Graph' },
+                  { id: 'kg-two-level', label: '2-Level Graph' },
+                  { id: 'kg-functional', label: 'Functional Graph' }
+                ].map(item => (
+                  <button
+                    key={item.id}
+                    onClick={() => {
+                      const target = document.getElementById(item.id);
+                      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }}
+                    style={{
+                      padding: '6px 12px',
+                      borderRadius: radii.md,
+                      border: `1px solid ${palette.border}`,
+                      background: palette.surface,
+                      cursor: 'pointer',
+                      fontWeight: 600,
+                      color: palette.text,
+                      fontSize: 12
+                    }}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div id="kg-module-clusters">
+              <MigrationFlowDiagram />
+            </div>
+            <div id="kg-migration-knowledge">
+              <DataLineageFlow />
+            </div>
+            <div id="kg-two-level">
+              <EntityRelationshipDiagram />
+            </div>
+            <div id="kg-functional">
+              <SemanticNetworkGraph />
+            </div>
+          </>
         )}
 
         {activeView === 'graph' && (
@@ -1872,7 +2436,6 @@ export default function DataNextApp() {
         )}
 
         {activeView === 'walkthrough' && <DemoWalkthrough />}
-
         {activeView === 'plan' && <ImplementationPlan />}
       </main>
 
@@ -1880,5 +2443,6 @@ export default function DataNextApp() {
         <ReportDetailPanel report={selectedReport} onClose={() => setSelectedReport(null)} criteria={criteria} />
       )}
     </div>
-  );
-}
+
+    )
+};

@@ -308,6 +308,7 @@ const MigrationMatrix = ({ reports }) => {
 const MigrationFlowDiagram = () => {
   const [filter, setFilter] = useState('All');
   const [selectedNode, setSelectedNode] = useState(null);
+  const [selectedNodePos, setSelectedNodePos] = useState(null);
 
   const filters = [
     'All',
@@ -503,7 +504,14 @@ const MigrationFlowDiagram = () => {
                 const pos = getNodePosition(node);
                 const mod = modules.find(m => m.id === node.module);
                 return (
-                  <g key={node.id} onClick={() => setSelectedNode(node)} style={{ cursor: 'pointer' }}>
+                  <g
+                    key={node.id}
+                    onClick={() => {
+                      setSelectedNode(node);
+                      setSelectedNodePos(pos);
+                    }}
+                    style={{ cursor: 'pointer' }}
+                  >
                     <circle cx={pos.x} cy={pos.y} r={14} fill={palette.surface} stroke={mod.color} strokeWidth="2" />
                     <text x={pos.x} y={pos.y + 4} textAnchor="middle" fontSize="9" fill={palette.text}>
                       {node.label}
@@ -512,15 +520,28 @@ const MigrationFlowDiagram = () => {
                 );
               })}
             </svg>
+            {selectedNode && selectedNodePos && (
+              <div
+                style={{
+                  position: 'absolute',
+                  left: Math.min(selectedNodePos.x + 18, 1040),
+                  top: Math.min(selectedNodePos.y + 18, 640),
+                  background: palette.surface,
+                  border: `1px solid ${palette.border}`,
+                  borderRadius: radii.md,
+                  padding: '10px 12px',
+                  boxShadow: shadow,
+                  fontSize: 12,
+                  color: palette.text,
+                  minWidth: 180
+                }}
+              >
+                <div style={{ fontWeight: 700, marginBottom: 4 }}>{selectedNode.label}</div>
+                <div style={{ color: palette.muted }}>Module: {selectedNode.module.toUpperCase()}</div>
+                <div style={{ color: palette.muted }}>Type: {selectedNode.source}</div>
+              </div>
+            )}
           </div>
-
-          {selectedNode && (
-            <div style={{ ...cardStyle, border: `1px solid ${palette.border}` }}>
-              <div style={{ fontWeight: 700, color: palette.text }}>{selectedNode.label}</div>
-              <div style={{ fontSize: 12, color: palette.muted }}>Module: {selectedNode.module.toUpperCase()}</div>
-              <div style={{ fontSize: 12, color: palette.muted }}>Source: {selectedNode.source}</div>
-            </div>
-          )}
         </div>
       </div>
     </Section>
@@ -664,7 +685,7 @@ const DataLineageFlow = () => {
 
 // NEW: EntityRelationshipDiagram Component
 const EntityRelationshipDiagram = () => {
-  const [activeModule, setActiveModule] = useState('all');
+  const [selectedNode, setSelectedNode] = useState(null);
 
   const modules = [
     { id: 'all', label: 'All Modules', color: palette.primary },
@@ -683,17 +704,17 @@ const EntityRelationshipDiagram = () => {
     { id: 'mm', label: 'Materials\n(MM)', type: 'module', x: 380, y: 380, color: '#F97316' },
     { id: 'pp', label: 'Production\n(PP)', type: 'module', x: 620, y: 380, color: '#EF4444' },
     { id: 'im', label: 'Inventory\n(IM)', type: 'module', x: 900, y: 380, color: '#0EA5E9' },
-    { id: 'r1', label: 'S_ALR_8701', type: 'report', x: 180, y: 120, color: '#93C5FD', module: 'fi' },
-    { id: 'r2', label: 'ZFI001', type: 'report', x: 140, y: 240, color: '#93C5FD', module: 'fi' },
-    { id: 'r3', label: 'KSB1', type: 'report', x: 460, y: 120, color: '#C4B5FD', module: 'co' },
-    { id: 'r4', label: 'ZCO001', type: 'report', x: 560, y: 120, color: '#C4B5FD', module: 'co' },
-    { id: 'r5', label: 'VA05', type: 'report', x: 900, y: 120, color: '#86EFAC', module: 'sd' },
-    { id: 'r6', label: 'VF05', type: 'report', x: 860, y: 240, color: '#86EFAC', module: 'sd' },
-    { id: 'r7', label: 'ME2L', type: 'report', x: 300, y: 460, color: '#FDBA74', module: 'mm' },
-    { id: 'r8', label: 'ZMM01', type: 'report', x: 420, y: 470, color: '#FDBA74', module: 'mm' },
-    { id: 'r9', label: 'CO01', type: 'report', x: 600, y: 470, color: '#FCA5A5', module: 'pp' },
-    { id: 'r10', label: 'ZPP01', type: 'report', x: 680, y: 470, color: '#FCA5A5', module: 'pp' },
-    { id: 'r11', label: 'MB52', type: 'report', x: 880, y: 470, color: '#7DD3FC', module: 'im' },
+    { id: 'r1', label: 'S_ALR_8701', type: 'report', x: 180, y: 120, color: '#93C5FD', module: 'fi', description: 'GL balance summary', sourceTables: ['BSEG', 'SKA1'], usesEntities: ['Company Code', 'GL Account', 'Fiscal Period'] },
+    { id: 'r2', label: 'ZFI001', type: 'report', x: 140, y: 240, color: '#93C5FD', module: 'fi', description: 'AP aging overview', sourceTables: ['BSIK', 'LFA1'], usesEntities: ['Vendor', 'Payment Terms'] },
+    { id: 'r3', label: 'KSB1', type: 'report', x: 460, y: 120, color: '#C4B5FD', module: 'co', description: 'Cost center line items', sourceTables: ['COEP', 'CSKS'], usesEntities: ['Controlling Area', 'Cost Center', 'Fiscal Period'] },
+    { id: 'r4', label: 'ZCO001', type: 'report', x: 560, y: 120, color: '#C4B5FD', module: 'co', description: 'Internal order summary', sourceTables: ['COEP', 'AUFK'], usesEntities: ['Internal Order', 'Cost Element'] },
+    { id: 'r5', label: 'VA05', type: 'report', x: 900, y: 120, color: '#86EFAC', module: 'sd', description: 'Sales order list', sourceTables: ['VBAK', 'VBAP'], usesEntities: ['Customer', 'Sales Org'] },
+    { id: 'r6', label: 'VF05', type: 'report', x: 860, y: 240, color: '#86EFAC', module: 'sd', description: 'Billing document list', sourceTables: ['VBRK', 'VBRP'], usesEntities: ['Customer', 'Billing Type'] },
+    { id: 'r7', label: 'ME2L', type: 'report', x: 300, y: 460, color: '#FDBA74', module: 'mm', description: 'Purchasing documents by vendor', sourceTables: ['EKKO', 'EKPO'], usesEntities: ['Vendor', 'Material'] },
+    { id: 'r8', label: 'ZMM01', type: 'report', x: 420, y: 470, color: '#FDBA74', module: 'mm', description: 'Material movements overview', sourceTables: ['MKPF', 'MSEG'], usesEntities: ['Plant', 'Material'] },
+    { id: 'r9', label: 'CO01', type: 'report', x: 600, y: 470, color: '#FCA5A5', module: 'pp', description: 'Production order list', sourceTables: ['AFKO', 'AFPO'], usesEntities: ['Plant', 'Order Type'] },
+    { id: 'r10', label: 'ZPP01', type: 'report', x: 680, y: 470, color: '#FCA5A5', module: 'pp', description: 'Capacity utilization', sourceTables: ['CRHD', 'KBED'], usesEntities: ['Work Center', 'Capacity'] },
+    { id: 'r11', label: 'MB52', type: 'report', x: 880, y: 470, color: '#7DD3FC', module: 'im', description: 'Warehouse stock list', sourceTables: ['MARD', 'MARA'], usesEntities: ['Plant', 'Storage Location'] },
     { id: 'e1', label: 'Plant', type: 'entity', x: 520, y: 260, color: '#F59E0B' },
     { id: 'e2', label: 'Material', type: 'entity', x: 720, y: 300, color: '#F59E0B' },
     { id: 'e3', label: 'Customer', type: 'entity', x: 960, y: 300, color: '#F59E0B' }
@@ -708,60 +729,54 @@ const EntityRelationshipDiagram = () => {
     ['r9', 'e1'], ['r10', 'e2'], ['r11', 'e2']
   ];
 
-  const isNodeActive = (node) => {
-    if (activeModule === 'all') return true;
-    if (node.type === 'module') return node.id === activeModule;
-    if (node.type === 'report') return node.module === activeModule;
-    return node.type === 'entity';
+  const nodeById = Object.fromEntries(nodes.map(node => [node.id, node]));
+
+  const connectedNodeIds = () => {
+    if (!selectedNode) return new Set();
+    const ids = new Set();
+    edges.forEach(([from, to]) => {
+      if (from === selectedNode.id) ids.add(to);
+      if (to === selectedNode.id) ids.add(from);
+    });
+    return ids;
+  };
+
+  const connectedIds = connectedNodeIds();
+
+  const getModuleReportNodes = (moduleId) => nodes.filter(node => node.type === 'report' && node.module === moduleId);
+  const getConnectedNodes = (nodeId, type) => {
+    const ids = [];
+    edges.forEach(([from, to]) => {
+      if (from === nodeId && nodeById[to]?.type === type) ids.push(nodeById[to]);
+      if (to === nodeId && nodeById[from]?.type === type) ids.push(nodeById[from]);
+    });
+    return ids;
+  };
+  const diagramWidth = 1120;
+  const diagramHeight = 620;
+  const tooltipWidth = 240;
+  const sizeForNode = (node) => {
+    if (node.type === 'module') return 36;
+    if (node.type === 'entity') return 10;
+    return 16;
   };
 
   return (
-    <Section title="SAP 2-Level Knowledge Graph" subtitle="Level 1: Functional areas. Level 2: Reports and shared entities">
-      <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr', gap: 16 }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          {modules.map(module => (
-            <button
-              key={module.id}
-              onClick={() => setActiveModule(module.id)}
-              style={{
-                padding: '10px 12px',
-                borderRadius: radii.md,
-                border: `2px solid ${activeModule === module.id ? module.color : palette.border}`,
-                background: activeModule === module.id ? `${module.color}22` : palette.surface,
-                color: palette.text,
-                fontWeight: 600,
-                cursor: 'pointer',
-                textAlign: 'left'
-              }}
-            >
-              {module.label}
-            </button>
-          ))}
-          <div style={{ ...cardStyle, border: `1px solid ${palette.border}` }}>
-            <div style={{ fontWeight: 700, marginBottom: 8, color: palette.text }}>Graph Legend</div>
-            <div style={{ display: 'grid', gap: 6, fontSize: 12, color: palette.muted }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ width: 16, height: 16, borderRadius: '50%', background: palette.primary }} />
-                <span>Level 1: Modules</span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ width: 12, height: 12, borderRadius: '50%', background: '#93C5FD' }} />
-                <span>Level 2: Reports</span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ width: 12, height: 12, borderRadius: '50%', background: '#F59E0B' }} />
-                <span>Shared Entities</span>
-              </div>
-            </div>
-          </div>
+    <div style={cardStyle}>
+      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
+        <div style={{ ...cardStyle, boxShadow: shadow, textAlign: 'center', padding: '16px 26px', maxWidth: 520 }}>
+          <div style={{ fontSize: 20, fontWeight: 800, color: palette.text }}>SAP 2-Level Knowledge Graph</div>
+          <div style={{ marginTop: 4, color: palette.muted, fontSize: 13 }}>Level 1: Functional Areas → Level 2: Reports → Entity Relationships</div>
         </div>
-
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <div style={{ overflow: 'auto', borderRadius: radii.lg, border: `1px solid ${palette.border}`, background: palette.surface }}>
-          <svg width={1050} height={560} viewBox="0 0 1050 560">
+          <div style={{ position: 'relative', width: diagramWidth, height: diagramHeight }}>
+            <svg width={diagramWidth} height={diagramHeight} viewBox={`0 0 ${diagramWidth} ${diagramHeight}`}>
             {edges.map((edge, idx) => {
-              const from = nodes.find(n => n.id === edge[0]);
-              const to = nodes.find(n => n.id === edge[1]);
-              const active = isNodeActive(from) && isNodeActive(to);
+              const from = nodeById[edge[0]];
+              const to = nodeById[edge[1]];
+              const highlighted = selectedNode && (edge[0] === selectedNode.id || edge[1] === selectedNode.id);
               return (
                 <line
                   key={idx}
@@ -769,22 +784,38 @@ const EntityRelationshipDiagram = () => {
                   y1={from.y}
                   x2={to.x}
                   y2={to.y}
-                  stroke={edge[0].startsWith('r') ? '#F59E0B' : palette.border}
-                  strokeWidth={edge[0].startsWith('r') ? 1.5 : 1}
-                  opacity={active ? 0.7 : 0.15}
+                  stroke={highlighted ? '#F97316' : '#F59E0B'}
+                  strokeWidth={highlighted ? 2 : 1.25}
+                  opacity={selectedNode ? (highlighted ? 0.85 : 0.2) : 0.45}
                 />
               );
             })}
 
             {nodes.map(node => {
-              const active = isNodeActive(node);
-              const size = node.type === 'module' ? 34 : node.type === 'entity' ? 14 : 18;
+              const isSelected = selectedNode?.id === node.id;
+              const isConnected = connectedIds.has(node.id);
+              const nodeOpacity = selectedNode ? (isSelected || isConnected ? 1 : 0.2) : 1;
+              const size = node.type === 'module' ? 36 : node.type === 'entity' ? 10 : 16;
+              const textColor = node.type === 'module' ? '#fff' : palette.text;
+              const stroke = node.type === 'module' ? '#1f2937' : palette.surface;
               return (
-                <g key={node.id} opacity={active ? 1 : 0.2}>
-                  <circle cx={node.x} cy={node.y} r={size} fill={node.color} stroke={palette.surface} strokeWidth="2" />
-                  <text x={node.x} y={node.y + (node.type === 'module' ? -2 : 3)} textAnchor="middle" fontSize={node.type === 'module' ? 10 : 8} fill={palette.text}>
+                <g
+                  key={node.id}
+                  opacity={nodeOpacity}
+                  onClick={() => setSelectedNode(node)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <circle cx={node.x} cy={node.y} r={size} fill={node.color} stroke={stroke} strokeWidth="2" />
+                  <text
+                    x={node.x}
+                    y={node.y + (node.type === 'module' ? -2 : 3)}
+                    textAnchor="middle"
+                    fontSize={node.type === 'module' ? 9 : 8}
+                    fill={textColor}
+                    fontWeight={node.type === 'module' ? 700 : 500}
+                  >
                     {node.label.split('\n').map((line, idx) => (
-                      <tspan key={idx} x={node.x} dy={idx === 0 ? 0 : 12}>
+                      <tspan key={idx} x={node.x} dy={idx === 0 ? 0 : 11}>
                         {line}
                       </tspan>
                     ))}
@@ -792,10 +823,99 @@ const EntityRelationshipDiagram = () => {
                 </g>
               );
             })}
-          </svg>
+            </svg>
+            {selectedNode && (
+              <div
+                style={{
+                  position: 'absolute',
+                  left: Math.min(selectedNode.x + 140, diagramWidth - 280),
+                  top: Math.min(selectedNode.y + 20, diagramHeight - 240),
+                  background: palette.surface,
+                  border: `1px solid ${palette.border}`,
+                  borderRadius: radii.md,
+                  boxShadow: shadow,
+                  padding: '12px 14px',
+                  fontSize: 12,
+                  color: palette.text,
+                  width: tooltipWidth,
+                  zIndex: 6
+                }}
+              >
+                <div style={{ fontWeight: 800, fontSize: 14, marginBottom: 10, color: palette.primaryStrong }}>
+                  {selectedNode.type === 'module'
+                    ? modules.find(module => module.id === selectedNode.id)?.label
+                    : selectedNode.label}
+                </div>
+
+                {selectedNode.type === 'module' && (
+                  <div style={{ display: 'grid', gap: 10 }}>
+                    <div style={{ background: palette.bg, borderRadius: radii.sm, padding: 10 }}>
+                      <div style={{ color: palette.muted, fontWeight: 700, marginBottom: 6 }}>MODULE INFORMATION</div>
+                      <div style={{ color: palette.text, marginBottom: 4 }}>
+                        Reports: {getModuleReportNodes(selectedNode.id).length}
+                      </div>
+                      <div style={{ color: palette.text, fontSize: 11 }}>
+                        {getModuleReportNodes(selectedNode.id).slice(0, 4).map(report => `• ${report.label}`).join('  ')}
+                      </div>
+                    </div>
+                    <div style={{ background: palette.bg, borderRadius: radii.sm, padding: 10 }}>
+                      <div style={{ color: palette.muted, fontWeight: 700, marginBottom: 6 }}>CONNECTS TO ENTITIES</div>
+                      <div style={{ color: palette.text, fontSize: 11, display: 'grid', gap: 4 }}>
+                        {getConnectedNodes(selectedNode.id, 'report')
+                          .flatMap(report => (report.usesEntities || []).slice(0, 2))
+                          .slice(0, 5)
+                          .map(entity => (
+                            <div key={entity}>{`• ${entity}`}</div>
+                          ))}
+                        {!getConnectedNodes(selectedNode.id, 'report')
+                          .flatMap(report => (report.usesEntities || []).slice(0, 2))
+                          .slice(0, 5)
+                          .length && <div>• No direct entities listed</div>}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {selectedNode.type === 'report' && (
+                  <div style={{ display: 'grid', gap: 10 }}>
+                    <div style={{ background: palette.bg, borderRadius: radii.sm, padding: 10 }}>
+                      <div style={{ color: palette.muted, fontWeight: 700, marginBottom: 6 }}>REPORT DETAILS</div>
+                      {selectedNode.description && (
+                        <div style={{ color: palette.text, marginBottom: 6 }}>Description: {selectedNode.description}</div>
+                      )}
+                      <div style={{ color: palette.text, marginBottom: 4 }}>Module: {selectedNode.module.toUpperCase()}</div>
+                      {selectedNode.sourceTables && (
+                        <div style={{ color: palette.text }}>Source Tables: {selectedNode.sourceTables.join(', ')}</div>
+                      )}
+                    </div>
+                    <div style={{ background: palette.bg, borderRadius: radii.sm, padding: 10 }}>
+                      <div style={{ color: palette.muted, fontWeight: 700, marginBottom: 6 }}>USES ENTITIES</div>
+                      <div style={{ color: palette.text, fontSize: 11 }}>
+                        {selectedNode.usesEntities && selectedNode.usesEntities.length
+                          ? selectedNode.usesEntities.map(entity => `• ${entity}`).join('  ')
+                          : getConnectedNodes(selectedNode.id, 'entity').map(entity => `• ${entity.label}`).join('  ')}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {selectedNode.type === 'entity' && (
+                  <div style={{ display: 'grid', gap: 10 }}>
+                    <div style={{ background: palette.bg, borderRadius: radii.sm, padding: 10 }}>
+                      <div style={{ color: palette.muted, fontWeight: 700, marginBottom: 6 }}>ENTITY DETAILS</div>
+                      <div style={{ color: palette.text, marginBottom: 6 }}>{selectedNode.label}</div>
+                      <div style={{ color: palette.text, fontSize: 11 }}>
+                        {getConnectedNodes(selectedNode.id, 'report').map(report => `• ${report.label}`).join('  ')}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </Section>
+    </div>
   );
 };
 
@@ -811,6 +931,95 @@ const SemanticNetworkGraph = () => {
     { id: 'interactive', label: 'Interactive Graph' }
   ];
 
+  const moduleDetails = [
+    {
+      id: 'fi',
+      label: 'Finance (FI)',
+      color: '#2563EB',
+      icon: '💼',
+      keyFunctions: [
+        { name: 'General Ledger Accounting', standard: 3, bw: 2, custom: 2 },
+        { name: 'Accounts Payable', standard: 3, bw: 2, custom: 2 },
+        { name: 'Accounts Receivable', standard: 3, bw: 2, custom: 2 },
+        { name: 'Asset Accounting', standard: 2, bw: 1, custom: 1 }
+      ]
+    },
+    {
+      id: 'co',
+      label: 'Controlling (CO)',
+      color: '#7C3AED',
+      icon: '📈',
+      keyFunctions: [
+        { name: 'Cost Center Accounting', standard: 3, bw: 2, custom: 2 },
+        { name: 'Internal Orders', standard: 2, bw: 1, custom: 2 },
+        { name: 'Profitability Analysis (CO-PA)', standard: 2, bw: 1, custom: 1 },
+        { name: 'Product Costing', standard: 2, bw: 1, custom: 1 }
+      ]
+    },
+    {
+      id: 'sd',
+      label: 'Sales & Distribution (SD)',
+      color: '#16A34A',
+      icon: '🛒',
+      keyFunctions: [
+        { name: 'Sales Order Processing', standard: 3, bw: 2, custom: 2 },
+        { name: 'Delivery Management', standard: 2, bw: 1, custom: 1 },
+        { name: 'Billing', standard: 2, bw: 1, custom: 1 },
+        { name: 'Pricing & Conditions', standard: 2, bw: 1, custom: 2 }
+      ]
+    },
+    {
+      id: 'mm',
+      label: 'Materials Management (MM)',
+      color: '#F59E0B',
+      icon: '📦',
+      keyFunctions: [
+        { name: 'Material Master Data', standard: 2, bw: 1, custom: 1 },
+        { name: 'Purchase Requisition', standard: 2, bw: 1, custom: 1 },
+        { name: 'Purchase Order', standard: 3, bw: 2, custom: 2 },
+        { name: 'Subcontracting', standard: 2, bw: 1, custom: 1 },
+        { name: 'Goods Receipt', standard: 2, bw: 1, custom: 1 },
+        { name: 'Inventory Valuation', standard: 2, bw: 1, custom: 1 }
+      ]
+    },
+    {
+      id: 'pp',
+      label: 'Production Planning (PP)',
+      color: '#EF4444',
+      icon: '🏭',
+      keyFunctions: [
+        { name: 'Production Orders', standard: 3, bw: 2, custom: 2 },
+        { name: 'Goods Receipt/Issue for Orders', standard: 2, bw: 1, custom: 1 },
+        { name: 'Production Information System', standard: 3, bw: 1, custom: 2 },
+        { name: 'Capacity Planning', standard: 2, bw: 1, custom: 1 },
+        { name: 'Quality in Production', standard: 2, bw: 1, custom: 1 }
+      ]
+    },
+    {
+      id: 'mrp',
+      label: 'Material Requirements Planning (MRP)',
+      color: '#F97316',
+      icon: '🗄️',
+      keyFunctions: [
+        { name: 'MRP Run & Planning', standard: 3, bw: 1, custom: 2 },
+        { name: 'Demand Management', standard: 2, bw: 1, custom: 1 },
+        { name: 'Safety Stock & Reorder', standard: 2, bw: 1, custom: 1 }
+      ]
+    },
+    {
+      id: 'im',
+      label: 'Inventory Management (IM)',
+      color: '#14B8A6',
+      icon: '🏬',
+      keyFunctions: [
+        { name: 'Stock Overview', standard: 3, bw: 2, custom: 2 },
+        { name: 'Physical Inventory', standard: 2, bw: 1, custom: 1 },
+        { name: 'Stock Transfer', standard: 2, bw: 1, custom: 1 },
+        { name: 'Inventory Aging & Obsolescence', standard: 2, bw: 1, custom: 2 }
+      ]
+    }
+  ];
+
   const modules = [
     { id: 'fi', label: 'Finance (FI)', color: '#2563EB', x: 220, y: 120 },
     { id: 'co', label: 'Controlling (CO)', color: '#7C3AED', x: 520, y: 120 },
@@ -819,6 +1028,16 @@ const SemanticNetworkGraph = () => {
     { id: 'pp', label: 'Production Planning (PP)', color: '#EF4444', x: 520, y: 360 },
     { id: 'im', label: 'Inventory Management (IM)', color: '#0EA5E9', x: 860, y: 320 }
   ];
+
+  const formatCounts = (item) => (
+    <>
+      <span>{item.standard} Standard</span>
+      <span style={{ color: palette.muted }}> • </span>
+      <span>{item.bw} BW</span>
+      <span style={{ color: palette.muted }}> • </span>
+      <span style={{ color: '#F97316', fontWeight: 700 }}>{item.custom} Custom Z</span>
+    </>
+  );
 
   const buttonStyle = (active) => ({
     padding: '6px 12px',
@@ -832,7 +1051,7 @@ const SemanticNetworkGraph = () => {
   });
 
   return (
-    <Section title="SAP ECC to S/4HANA Migration - Functional Knowledge Graph" subtitle="Module-centric view with migration insights">
+    <Section title="SAP ECC to S/4HANA Migration - Functional Knowledge Graph" subtitle="Module-Centric View: Functions and their Associated Reports">
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
         {views.map(v => (
           <button key={v.id} onClick={() => setView(v.id)} style={buttonStyle(view === v.id)}>
@@ -842,30 +1061,71 @@ const SemanticNetworkGraph = () => {
       </div>
 
       {view === 'list' && (
-        <div style={{ ...cardStyle, border: `1px solid ${palette.border}` }}>
-          <div style={{ fontWeight: 700, color: palette.text, marginBottom: 8 }}>Module Summary</div>
-          <ul style={{ margin: 0, paddingLeft: 18, color: palette.muted, fontSize: 13, lineHeight: 1.6 }}>
-            <li>Finance: 12 functions, 5 standard, 6 custom reports</li>
-            <li>Controlling: 4 functions, 11 standard, 4 custom reports</li>
-            <li>Sales & Distribution: 7 functions, 9 standard, 5 custom reports</li>
-            <li>Materials Management: 6 functions, 17 standard, 7 custom reports</li>
-            <li>Production Planning: 5 functions, 12 standard, 5 custom reports</li>
-            <li>Inventory: 4 functions, 9 standard, 4 custom reports</li>
-          </ul>
+        <div style={{ display: 'grid', gap: 14 }}>
+          <div style={{ padding: '12px 14px', borderRadius: radii.md, border: '1px solid #BFDBFE', background: '#EFF6FF', color: '#1E3A8A' }}>
+            <span style={{ fontWeight: 800 }}>Tip:</span> Click on any module to expand and see its key functions. Then click on individual functions to view all associated reports (Standard ABAP, BW, and Custom Z).
+          </div>
+
+          {moduleDetails.map(module => (
+            <div key={module.id} style={{ borderRadius: radii.md, border: `2px solid ${module.color}`, overflow: 'hidden', boxShadow: shadow }}>
+              <div style={{ background: module.color, color: '#fff', padding: '14px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <div style={{ width: 32, height: 32, borderRadius: 8, border: '2px solid rgba(255,255,255,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>
+                    {module.icon}
+                  </div>
+                  <div style={{ fontWeight: 800, fontSize: 16 }}>{module.label}</div>
+                </div>
+                <div style={{ fontSize: 18, fontWeight: 700 }}>⌄</div>
+              </div>
+              <div style={{ background: palette.surface, padding: '16px 18px' }}>
+                <div style={{ fontWeight: 800, fontSize: 12, letterSpacing: '0.08em', color: palette.text }}>KEY FUNCTIONS</div>
+                <div style={{ marginTop: 12, display: 'grid', gap: 10 }}>
+                  {module.keyFunctions.map((fn, idx) => (
+                    <div key={`${module.id}-${idx}`} style={{ display: 'flex', gap: 12 }}>
+                      <div style={{ width: 4, borderRadius: 999, background: '#D1D5DB' }} />
+                      <div>
+                        <div style={{ fontWeight: 700, color: palette.text }}>{fn.name}</div>
+                        <div style={{ fontSize: 12, color: palette.muted, marginTop: 2 }}>{formatCounts(fn)}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
       {view === 'hierarchy' && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 12 }}>
-          {modules.map(module => (
-            <div key={module.id} style={{ ...cardStyle, border: `1px solid ${palette.border}` }}>
-              <div style={{ fontWeight: 700, color: module.color }}>{module.label}</div>
-              <div style={{ color: palette.muted, fontSize: 12, marginTop: 6 }}>Functions, reports, and migration readiness</div>
-              <div style={{ marginTop: 10, height: 8, borderRadius: 6, background: palette.bg }}>
-                <div style={{ width: '72%', height: '100%', borderRadius: 6, background: module.color }} />
+        <div style={{ ...cardStyle, border: `1px solid ${palette.border}`, padding: 18 }}>
+          <div style={{ textAlign: 'center', fontWeight: 800, fontSize: 16, marginBottom: 18, color: palette.text }}>
+            Functional Hierarchy - Module → Functions → Reports
+          </div>
+          <div style={{ display: 'grid', gap: 22 }}>
+            {moduleDetails.map(module => (
+              <div key={module.id} style={{ display: 'grid', gridTemplateColumns: '240px 1fr', gap: 18, alignItems: 'start' }}>
+                <div style={{ background: module.color, color: '#fff', padding: '16px 14px', borderRadius: radii.md, boxShadow: shadow }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <div style={{ width: 34, height: 34, borderRadius: 10, border: '2px solid rgba(255,255,255,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>
+                      {module.icon}
+                    </div>
+                    <div>
+                      <div style={{ fontWeight: 800, fontSize: 14 }}>{module.label}</div>
+                      <div style={{ fontSize: 12, opacity: 0.9 }}>{module.keyFunctions.length} Key Functions</div>
+                    </div>
+                  </div>
+                </div>
+                <div style={{ display: 'grid', gap: 12, borderLeft: '2px solid #E5E7EB', paddingLeft: 16 }}>
+                  {module.keyFunctions.map((fn, idx) => (
+                    <div key={`${module.id}-hier-${idx}`} style={{ background: '#F9FAFB', borderRadius: radii.md, border: '1px solid #D1D5DB', padding: '12px 14px' }}>
+                      <div style={{ fontWeight: 700, color: palette.text, marginBottom: 4 }}>{fn.name}</div>
+                      <div style={{ fontSize: 12, color: palette.muted }}>{formatCounts(fn)}</div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       )}
 
@@ -890,13 +1150,29 @@ const SemanticNetworkGraph = () => {
       )}
 
       <div style={{ marginTop: 12, ...cardStyle, border: `1px solid ${palette.border}` }}>
-        <div style={{ fontWeight: 700, color: palette.text, marginBottom: 6 }}>Migration Insights</div>
-        <div style={{ fontSize: 12, color: palette.muted, lineHeight: 1.6 }}>
-          <div>- Finance: 4 functions, 12 standard, 6 custom reports</div>
-          <div>- Materials: 6 functions, 17 standard, 7 custom reports</div>
-          <div>- Production: 5 functions, 12 standard, 5 custom reports</div>
-          <div>- Inventory: 4 functions, 9 standard, 4 custom reports</div>
-          <div>- Total Custom Z Reports: 41 requiring analysis</div>
+        <div style={{ fontWeight: 800, color: palette.text, marginBottom: 10, fontSize: 16 }}>Migration Insights</div>
+        <div style={{ color: '#2563EB', fontWeight: 700, marginBottom: 6 }}>Report Summary</div>
+        <ul style={{ margin: 0, paddingLeft: 18, color: palette.text, fontSize: 13, lineHeight: 1.6 }}>
+          <li><strong>Finance:</strong> 4 functions, 12 standard + 6 custom reports</li>
+          <li><strong>Controlling:</strong> 4 functions, 11 standard + 6 custom reports</li>
+          <li><strong>Sales & Distribution:</strong> 4 functions, 11 standard + 5 custom reports</li>
+          <li><strong>Materials Management:</strong> 6 functions, 17 standard + 7 custom reports</li>
+        </ul>
+        <div style={{ marginTop: 12, color: '#F97316', fontWeight: 700 }}>Migration Priorities</div>
+        <ul style={{ margin: '6px 0 0', paddingLeft: 18, color: palette.text, fontSize: 13, lineHeight: 1.6 }}>
+          <li><strong>Production:</strong> 5 functions, 15 standard + 7 custom reports</li>
+          <li><strong>MRP:</strong> 3 functions, 8 standard + 4 custom reports</li>
+          <li><strong>Inventory:</strong> 4 functions, 12 standard + 6 custom reports</li>
+          <li><strong>Total Custom Z Reports:</strong> 41 requiring analysis</li>
+        </ul>
+        <div style={{ marginTop: 12, borderTop: `1px solid ${palette.border}`, paddingTop: 12 }}>
+          <div style={{ fontWeight: 700, color: palette.text, marginBottom: 8 }}>Key Migration Considerations</div>
+          <div style={{ display: 'grid', gap: 8, color: palette.text, fontSize: 13 }}>
+            <div style={{ display: 'flex', gap: 8 }}><span style={{ color: '#2563EB' }}>→</span><span>Many custom reports span multiple functions (e.g., GR/IR reconciliation links MM Goods Receipt, AP, and GL)</span></div>
+            <div style={{ display: 'flex', gap: 8 }}><span style={{ color: '#8B5CF6' }}>→</span><span>S/4HANA Embedded Analytics may replace many BW extractors, especially in FI and CO modules</span></div>
+            <div style={{ display: 'flex', gap: 8 }}><span style={{ color: '#10B981' }}>→</span><span>Production and MRP functions are tightly integrated - migration requires careful coordination</span></div>
+            <div style={{ display: 'flex', gap: 8 }}><span style={{ color: '#F97316' }}>→</span><span>Custom Z reports should be evaluated for migration to Fiori apps, CDS views, or SAP Analytics Cloud</span></div>
+          </div>
         </div>
         {selectedModule && (
           <div style={{ marginTop: 10, fontSize: 12, color: palette.text }}>

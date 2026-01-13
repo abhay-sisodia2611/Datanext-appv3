@@ -760,6 +760,17 @@ const EntityRelationshipDiagram = () => {
     if (node.type === 'entity') return 10;
     return 16;
   };
+  const activeModuleId = selectedNode?.type === 'module' ? selectedNode.id : 'all';
+  const handleModuleSelect = (moduleId) => {
+    if (moduleId === 'all') {
+      setSelectedNode(null);
+      return;
+    }
+    const moduleNode = nodeById[moduleId];
+    if (moduleNode) {
+      setSelectedNode(moduleNode);
+    }
+  };
 
   return (
     <div style={cardStyle}>
@@ -769,10 +780,43 @@ const EntityRelationshipDiagram = () => {
           <div style={{ marginTop: 4, color: palette.muted, fontSize: 13 }}>Level 1: Functional Areas → Level 2: Reports → Entity Relationships</div>
         </div>
       </div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-        <div style={{ overflow: 'auto', borderRadius: radii.lg, border: `1px solid ${palette.border}`, background: palette.surface }}>
-          <div style={{ position: 'relative', width: diagramWidth, height: diagramHeight }}>
-            <svg width={diagramWidth} height={diagramHeight} viewBox={`0 0 ${diagramWidth} ${diagramHeight}`}>
+      <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr', gap: 16, alignItems: 'start' }}>
+        <div style={{ ...cardStyle, padding: 14, border: `1px solid ${palette.border}`, boxShadow: shadow }}>
+          <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.08em', color: palette.muted, marginBottom: 10 }}>MODULES</div>
+          <div style={{ display: 'grid', gap: 8 }}>
+            {modules.map(module => {
+              const isActive = activeModuleId === module.id;
+              return (
+                <button
+                  key={module.id}
+                  onClick={() => handleModuleSelect(module.id)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 10,
+                    padding: '8px 10px',
+                    borderRadius: radii.md,
+                    border: `1px solid ${isActive ? module.color : palette.border}`,
+                    background: isActive ? `${module.color}15` : palette.surface,
+                    color: isActive ? module.color : palette.text,
+                    fontWeight: 700,
+                    fontSize: 12,
+                    cursor: 'pointer',
+                    boxShadow: isActive ? shadow : 'none',
+                    textAlign: 'left'
+                  }}
+                >
+                  <span style={{ width: 10, height: 10, borderRadius: 6, background: module.color, display: 'inline-block' }} />
+                  <span>{module.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <div style={{ overflow: 'auto', borderRadius: radii.lg, border: `1px solid ${palette.border}`, background: palette.surface }}>
+            <div style={{ position: 'relative', width: diagramWidth, height: diagramHeight }}>
+              <svg width={diagramWidth} height={diagramHeight} viewBox={`0 0 ${diagramWidth} ${diagramHeight}`}>
             {edges.map((edge, idx) => {
               const from = nodeById[edge[0]];
               const to = nodeById[edge[1]];
@@ -913,6 +957,7 @@ const EntityRelationshipDiagram = () => {
               </div>
             )}
           </div>
+        </div>
         </div>
       </div>
     </div>
